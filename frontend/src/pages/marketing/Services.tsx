@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Code2,
   Zap,
@@ -12,6 +13,7 @@ import {
   BellRing,
   RefreshCcw,
   ExternalLink,
+  Sparkles,
 } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
@@ -61,35 +63,43 @@ const automationTools = [
     icon: MessageSquareReply,
     name: "Auto-Reply",
     copy: "Instantly responds to common customer messages and inquiries, day or night.",
+    example: "\"Thanks for reaching out! We're open Mon–Sat, 9am–7pm. How can we help?\"",
   },
   {
     icon: PackageCheck,
     name: "Order Taken",
     copy: "Automatically confirms new orders and kicks off fulfillment the moment they're placed.",
+    example: "\"Order #4821 confirmed — we're preparing it now. Confirmation sent to customer.\"",
   },
   {
     icon: ShoppingBag,
     name: "Abandoned Cart Recovery",
     copy: "Nudges customers who added items but didn't check out.",
+    example: "\"Still thinking it over? Your cart's saved — here's 10% off to finish up.\"",
   },
   {
     icon: BellRing,
     name: "Low-Stock Alerts",
     copy: "Notifies the right person the moment inventory runs low.",
+    example: "\"Heads up: 'Ceramic Mug - Blue' is down to 3 units.\"",
   },
   {
     icon: Star,
     name: "Review Requests",
     copy: "Follows up after a purchase to ask for a review, automatically.",
+    example: "\"Loved your order? A quick review helps other customers find us.\"",
   },
   {
     icon: RefreshCcw,
     name: "Daily/Weekly Summaries",
     copy: "Delivers a plain-language recap of what happened, on a schedule.",
+    example: "\"Sales up 12% this week — mostly weekend traffic. 3 items running low.\"",
   },
 ];
 
 export default function Services() {
+  const [activeTool, setActiveTool] = useState<string | null>(null);
+
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
@@ -131,26 +141,49 @@ export default function Services() {
         <div className="mx-auto max-w-5xl px-6">
           <h2 className="text-center text-2xl font-bold text-ink">Automation tools we're building</h2>
           <p className="mx-auto mt-2 max-w-xl text-center text-sm text-slate-500">
-            Widely-used building blocks we assemble into rules for your brand — not a
-            vague promise, specific tools.
+            Widely-used building blocks we assemble into rules for your brand — click one
+            to see what it actually sends.
           </p>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {automationTools.map(({ icon: Icon, name, copy }, i) => (
-              <motion.div
-                key={name}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.05 }}
-                className="rounded-xl border border-slate-200 p-5"
-              >
-                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-info/10 text-info">
-                  <Icon size={16} />
-                </div>
-                <h3 className="text-sm font-semibold text-ink">{name}</h3>
-                <p className="mt-1 text-xs text-slate-500">{copy}</p>
-              </motion.div>
-            ))}
+            {automationTools.map(({ icon: Icon, name, copy, example }, i) => {
+              const isActive = activeTool === name;
+              return (
+                <motion.button
+                  key={name}
+                  onClick={() => setActiveTool(isActive ? null : name)}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: i * 0.05 }}
+                  whileHover={{ y: -2 }}
+                  className={`rounded-xl border p-5 text-left transition-colors ${
+                    isActive ? "border-brand/40 bg-brand/5" : "border-slate-200 hover:border-brand/20"
+                  }`}
+                >
+                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-info/10 text-info">
+                    <Icon size={16} />
+                  </div>
+                  <h3 className="text-sm font-semibold text-ink">{name}</h3>
+                  <p className="mt-1 text-xs text-slate-500">{copy}</p>
+
+                  <AnimatePresence>
+                    {isActive && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-3 flex items-start gap-2 rounded-lg bg-white p-3 text-xs text-slate-600 shadow-sm">
+                          <Sparkles size={12} className="mt-0.5 shrink-0 text-brand" />
+                          {example}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              );
+            })}
           </div>
         </div>
       </section>

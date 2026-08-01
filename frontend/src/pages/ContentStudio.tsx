@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { api } from "../lib/api";
 import TrustBadge from "../components/TrustBadge";
+import TypewriterText from "../components/TypewriterText";
 
 const kinds = [
   { id: "product-description", label: "Product Description" },
@@ -85,7 +86,7 @@ export default function ContentStudio() {
               exit={{ opacity: 0, height: 0 }}
               className="mt-5 overflow-hidden rounded-lg bg-slate-50 p-4 text-sm text-slate-700"
             >
-              {result}
+              <TypewriterText text={result} speed={8} />
             </motion.div>
           )}
         </AnimatePresence>

@@ -19,10 +19,13 @@ import Terms from "./pages/marketing/Terms";
 import Privacy from "./pages/marketing/Privacy";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
+import CommandPalette from "./components/CommandPalette";
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <CommandPalette />
+      <Routes>
       {/* Public marketing site */}
       <Route path="/" element={<Landing />} />
       <Route path="/services" element={<Services />} />
@@ -59,6 +62,7 @@ export default function App() {
 
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
-    </Routes>
+      </Routes>
+    </>
   );
 }

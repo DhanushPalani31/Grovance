@@ -45,7 +45,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Mail size={14} />
-                hello@grovance.app
+                grovanceco@gmail.com
               </div>
             </div>
           </div>

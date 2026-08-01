@@ -63,10 +63,20 @@ export default function Contact() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">Message</label>
+              <div className="mb-1 flex items-center justify-between">
+                <label className="block text-sm font-medium text-slate-700">Message</label>
+                <span
+                  className={`text-xs ${
+                    form.message.length > 500 ? "text-danger" : "text-slate-400"
+                  }`}
+                >
+                  {form.message.length}/500
+                </span>
+              </div>
               <textarea
                 required
                 rows={4}
+                maxLength={500}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"

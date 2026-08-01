@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { RefreshCw } from "lucide-react";
 import { api } from "../lib/api";
 import TrustBadge from "../components/TrustBadge";
+import TypewriterText from "../components/TypewriterText";
 
 export default function Insights() {
   const [summary, setSummary] = useState<string | null>(null);
@@ -68,7 +69,7 @@ export default function Insights() {
               animate={{ opacity: 1, y: 0 }}
               className="text-sm leading-relaxed text-slate-700"
             >
-              {summary}
+              <TypewriterText text={summary} speed={10} />
             </motion.p>
           )}
         </AnimatePresence>

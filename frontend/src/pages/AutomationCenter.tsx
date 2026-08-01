@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Play, Clock } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play, Clock, ArrowRight } from "lucide-react";
 import { api, type Rule } from "../lib/api";
 import { useToast } from "../lib/ToastContext";
 import TrustBadge from "../components/TrustBadge";
+import ConfettiBurst from "../components/ConfettiBurst";
+import { SkeletonRow } from "../components/Skeleton";
 
 export default function AutomationCenter() {
   const { showToast } = useToast();
@@ -11,6 +13,8 @@ export default function AutomationCenter() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [runningId, setRunningId] = useState<string | null>(null);
+  const [firedId, setFiredId] = useState<string | null>(null);
+  const [confettiId, setConfettiId] = useState<string | null>(null);
 
   useEffect(() => {
     api
@@ -26,7 +30,12 @@ export default function AutomationCenter() {
   }, []);
 
   const toggle = async (id: string) => {
+    const wasEnabled = rules.find((r) => r.id === id)?.enabled;
     setRules((r) => r.map((rule) => (rule.id === id ? { ...rule, enabled: !rule.enabled } : rule)));
+    if (!wasEnabled) {
+      setConfettiId(id);
+      setTimeout(() => setConfettiId(null), 700);
+    }
     try {
       const updated = await api.toggleRule(id);
       setRules((r) => r.map((rule) => (rule.id === id ? updated : rule)));
@@ -42,6 +51,8 @@ export default function AutomationCenter() {
       const res = await api.runRule(rule.id);
       setRules((r) => r.map((x) => (x.id === rule.id ? res.rule : x)));
       showToast(`Fired: ${rule.action}`, "success");
+      setFiredId(rule.id);
+      setTimeout(() => setFiredId(null), 1200);
     } catch {
       showToast("Couldn't reach the backend to run this rule", "error");
     } finally {
@@ -69,7 +80,13 @@ export default function AutomationCenter() {
         </div>
       )}
 
-      {loading && !error && <p className="text-sm text-slate-400">Loading rules…</p>}
+      {loading && !error && (
+        <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          {[1, 2, 3].map((i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </div>
+      )}
 
       <div className="space-y-3">
         {rules.map((rule, i) => (
@@ -78,26 +95,48 @@ export default function AutomationCenter() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: i * 0.04 }}
-            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+            className="relative rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
           >
+            <ConfettiBurst show={confettiId === rule.id} />
+
             <div className="flex items-center justify-between gap-4">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-ink">
-                  When: <span className="font-normal text-slate-600">{rule.trigger}</span>
-                </p>
-                <p className="mt-1 text-sm font-medium text-ink">
-                  Then: <span className="font-normal text-slate-600">{rule.action}</span>
-                </p>
+              {/* Visual flow: trigger -> arrow -> action, with a pulse traveling the arrow on fire */}
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <div className="min-w-0 rounded-lg bg-slate-50 px-3 py-2">
+                  <p className="text-[10px] font-medium uppercase tracking-wide text-slate-400">Trigger</p>
+                  <p className="truncate text-sm font-medium text-ink">{rule.trigger}</p>
+                </div>
+
+                <div className="relative w-8 shrink-0">
+                  <ArrowRight size={16} className="text-slate-300" />
+                  <AnimatePresence>
+                    {firedId === rule.id && (
+                      <motion.span
+                        initial={{ opacity: 1, x: 0 }}
+                        animate={{ opacity: 0, x: 24 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                        className="absolute left-0 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-success"
+                      />
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <div className="min-w-0 rounded-lg bg-info/5 px-3 py-2">
+                  <p className="text-[10px] font-medium uppercase tracking-wide text-info/70">Action</p>
+                  <p className="truncate text-sm font-medium text-ink">{rule.action}</p>
+                </div>
               </div>
+
               <div className="flex shrink-0 items-center gap-3">
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => runNow(rule)}
                   disabled={runningId === rule.id}
                   className="flex items-center gap-1.5 rounded-lg border border-brand/30 bg-brand/5 px-3 py-1.5 text-xs font-semibold text-brand transition-colors hover:bg-brand/10 disabled:opacity-50"
                 >
                   <Play size={12} />
                   {runningId === rule.id ? "Running…" : "Run now"}
-                </button>
+                </motion.button>
                 <button
                   onClick={() => toggle(rule.id)}
                   className={`h-6 w-11 shrink-0 rounded-full transition-colors ${
@@ -105,7 +144,8 @@ export default function AutomationCenter() {
                   }`}
                   aria-label="Toggle rule"
                 >
-                  <span
+                  <motion.span
+                    layout
                     className={`block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow transition-transform ${
                       rule.enabled ? "translate-x-5.5" : "translate-x-0.5"
                     }`}

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Zap, Bot, ShieldCheck, Code2, ArrowRight } from "lucide-react";
@@ -5,6 +6,10 @@ import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
 import Projects from "../../components/marketing/Projects";
+import ScrollProgressBar from "../../components/marketing/ScrollProgressBar";
+import HeroBackground from "../../components/marketing/HeroBackground";
+import AnimatedNumber from "../../components/AnimatedNumber";
+import { api, type DashboardStats } from "../../lib/api";
 
 const pillars = [
   {
@@ -30,11 +35,19 @@ const pillars = [
 ];
 
 export default function Landing() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+
+  useEffect(() => {
+    api.getStats().then(setStats).catch(() => setStats(null));
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
+      <ScrollProgressBar />
       <Navbar />
 
-      <section className="mx-auto max-w-4xl px-6 py-24 text-center">
+      <section className="relative mx-auto max-w-4xl px-6 py-24 text-center">
+        <HeroBackground />
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,6 +88,18 @@ export default function Landing() {
             Talk to us
           </Link>
         </motion.div>
+
+        {stats && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-8 flex items-center justify-center gap-2 text-sm text-slate-500"
+          >
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
+            <AnimatedNumber value={stats.automationEventsToday} /> automation events fired today, live
+          </motion.div>
+        )}
       </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-24">

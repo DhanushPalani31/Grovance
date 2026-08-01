@@ -173,4 +173,39 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
   page title renders correctly, and confirmed `/api/health` responds — a real
   end-to-end check of the built app, not just `tsc`/`vite build` passing
 
+**Full interactive/creative UI pass:**
+- Company email updated to `grovanceco@gmail.com`; Careers page rewritten from
+  fake job listings to an honest "no open positions right now" message
+- New reusable components: `Skeleton` (loading states), `ConfettiBurst` (lightweight,
+  no external dependency), `CommandPalette` (⌘K global search/navigation),
+  `GuidedTour` (4-step first-visit walkthrough), `Sparkline`, `TypewriterText`,
+  `UptimeRing`, `PasswordStrength`
+- **Landing**: scroll progress bar, animated gradient-blob background, a live
+  "X automation events fired today" counter pulling real backend data
+- **Automation Center**: visual trigger→action flow diagram per rule, animated
+  pulse traveling the arrow on "Run Now", confetti burst on enabling a rule
+- **AI Assistant**: typewriter streaming reveal, quick-reply chips, animated
+  pulsing "thinking" avatar
+- **Content Studio & Insights**: typewriter reveal for generated content/summaries
+- **Dashboard**: session-based sparkline trends on stat cards, new-activity-item
+  flash highlight, skeleton loaders replacing plain "Loading…" text
+- **Maintenance**: animated circular uptime gauge, changelog items slide in with
+  git-commit icons, confetti burst when a ticket is marked Resolved
+- **Contact**: live character counter on the message field
+- **Login & Signup**: password strength meter (Signup), animated success
+  checkmark before redirecting to the portal on both
+- **Services**: automation tools are now clickable — each reveals an inline
+  example of what it would actually send, instead of just describing it
+- Verified: full `tsc`/`vite build` pass on both frontend and backend, plus a
+  live smoke test running both servers together — every route (`/`, `/services`,
+  `/pricing`, `/about`, `/careers`, `/contact`, `/login`, `/signup`) returns
+  HTTP 200 and the backend's stats/rules/activity endpoints respond correctly
+
+**Deliberately not attempted this pass** (flagged rather than silently skipped):
+- A true dark-mode toggle — would require touching color classes across every
+  page safely, better as its own dedicated pass than rushed here
+- Real backend token-streaming for AI responses — the typewriter effect above
+  achieves the same visual result client-side without a bigger SSE/streaming
+  architecture change
+
 See `PROJECT-PLAN.md` for what's next.

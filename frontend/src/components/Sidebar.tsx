@@ -58,6 +58,9 @@ export default function Sidebar() {
           Every widget here is a real Grovance service — automation, AI, and
           maintenance — not a mockup.
         </p>
+        <p className="mt-2 flex items-center gap-1 text-white/70">
+          Press <kbd className="rounded bg-white/20 px-1.5 py-0.5 text-[10px]">⌘K</kbd> to jump anywhere
+        </p>
       </div>
     </aside>
   );
