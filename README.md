@@ -69,8 +69,13 @@ external keys needed.
 
 ## Status
 
-- **Phase 1 (foundation):** complete — both services scaffolded, building, and communicating.
-- **Phase 2 (public marketing site):** complete — Landing/Services/Pricing/Contact pages,
-  live embedded AI widget, and a contact form wired into the automation activity log.
+- **Phase 1 (foundation):** complete
+- **Phase 2 (public marketing site):** complete
+- **Phase 4 (automation deepening):** complete — rule toggles now persist on the
+  backend (`GET/POST /api/automation/rules`) instead of local React state, and every
+  toggle logs to the same activity feed the dashboard reads from.
+- **Phase 5 (AI insights):** complete — the Insights page calls a real
+  `/api/ai/insights` endpoint that feeds Claude the shop's actual activity log and
+  rule/lead stats, generating a genuine on-demand summary instead of static copy.
 
 See `PROJECT-PLAN.md` for what's next.

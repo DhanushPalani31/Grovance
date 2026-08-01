@@ -40,6 +40,21 @@ const activityLog: ActivityItem[] = [
   },
 ];
 
+export interface Rule {
+  id: string;
+  trigger: string;
+  action: string;
+  enabled: boolean;
+}
+
+const rules: Rule[] = [
+  { id: "1", trigger: "New order placed", action: "Send confirmation email to customer", enabled: true },
+  { id: "2", trigger: "Stock falls below 5 units", action: "Notify owner via WhatsApp/email", enabled: true },
+  { id: "3", trigger: "Every day at 9 PM", action: "Generate daily sales summary", enabled: true },
+  { id: "4", trigger: "Customer inactive for 30 days", action: "Send a personalized win-back offer", enabled: false },
+  { id: "5", trigger: "Every Sunday", action: "Auto-backup shop data", enabled: true },
+];
+
 export interface Lead {
   id: string;
   name: string;
@@ -76,6 +91,15 @@ export const store = {
   },
   listLeads(): Lead[] {
     return [...leads];
+  },
+  listRules(): Rule[] {
+    return [...rules];
+  },
+  toggleRule(id: string): Rule | undefined {
+    const rule = rules.find((r) => r.id === id);
+    if (!rule) return undefined;
+    rule.enabled = !rule.enabled;
+    return rule;
   },
 };
 

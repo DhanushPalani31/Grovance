@@ -29,9 +29,24 @@ export interface AIChatResponse {
   reply: string;
 }
 
+export interface Rule {
+  id: string;
+  trigger: string;
+  action: string;
+  enabled: boolean;
+}
+
+export interface InsightsResponse {
+  summary: string;
+  generatedAt: string;
+}
+
 export const api = {
   getHealth: () => request<HealthStatus>("/api/health"),
   getActivity: () => request<ActivityItem[]>("/api/automation/activity"),
+  getRules: () => request<Rule[]>("/api/automation/rules"),
+  toggleRule: (id: string) =>
+    request<Rule>(`/api/automation/rules/${id}/toggle`, { method: "POST" }),
   sendChatMessage: (message: string, persona: "shop" | "marketing" = "shop") =>
     request<AIChatResponse>("/api/ai/chat", {
       method: "POST",
@@ -42,6 +57,8 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ prompt, kind }),
     }),
+  generateInsights: () =>
+    request<InsightsResponse>("/api/ai/insights", { method: "POST" }),
   submitLead: (name: string, email: string, message: string) =>
     request<{ received: boolean; id: string }>("/api/leads", {
       method: "POST",

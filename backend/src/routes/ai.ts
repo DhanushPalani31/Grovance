@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAnthropicClient, SHOP_SYSTEM_PROMPT, MARKETING_SYSTEM_PROMPT } from "../lib/anthropic";
+import { getAnthropicClient, SHOP_SYSTEM_PROMPT, MARKETING_SYSTEM_PROMPT, INSIGHTS_SYSTEM_PROMPT } from "../lib/anthropic";
 import { store } from "../lib/store";
 
 export const aiRouter = Router();
@@ -72,6 +72,48 @@ aiRouter.post("/generate", async (req, res) => {
     store.logActivity({ label: `Content Studio generated a ${kind || "product-description"}`, source: "ai" });
 
     res.json({ result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "AI request failed" });
+  }
+});
+
+aiRouter.post("/insights", async (_req, res) => {
+  const anthropic = getAnthropicClient();
+  if (!anthropic) {
+    return res.status(503).json({
+      error: "ANTHROPIC_API_KEY not configured on the server",
+    });
+  }
+
+  const activity = store.listActivity().slice(0, 15);
+  const rules = store.listRules();
+  const leads = store.listLeads();
+
+  const contextSummary = `
+Recent activity log (most recent first):
+${activity.map((a) => `- [${a.source}] ${a.label} (${a.timestamp})`).join("\n")}
+
+Active automation rules: ${rules.filter((r) => r.enabled).length} of ${rules.length} enabled.
+New leads captured this period: ${leads.length}.
+`;
+
+  try {
+    const response = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: 300,
+      system: INSIGHTS_SYSTEM_PROMPT,
+      messages: [{ role: "user", content: contextSummary }],
+    });
+
+    const summary = response.content
+      .filter((block) => block.type === "text")
+      .map((block) => (block.type === "text" ? block.text : ""))
+      .join("\n");
+
+    store.logActivity({ label: "Weekly AI insights summary generated", source: "ai" });
+
+    res.json({ summary, generatedAt: new Date().toISOString() });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "AI request failed" });

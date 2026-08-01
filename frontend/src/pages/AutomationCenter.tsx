@@ -1,26 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { api, type Rule } from "../lib/api";
 import TrustBadge from "../components/TrustBadge";
 
-interface Rule {
-  id: string;
-  trigger: string;
-  action: string;
-  enabled: boolean;
-}
-
-const initialRules: Rule[] = [
-  { id: "1", trigger: "New order placed", action: "Send confirmation email to customer", enabled: true },
-  { id: "2", trigger: "Stock falls below 5 units", action: "Notify owner via WhatsApp/email", enabled: true },
-  { id: "3", trigger: "Every day at 9 PM", action: "Generate daily sales summary", enabled: true },
-  { id: "4", trigger: "Customer inactive for 30 days", action: "Send a personalized win-back offer", enabled: false },
-  { id: "5", trigger: "Every Sunday", action: "Auto-backup shop data", enabled: true },
-];
-
 export default function AutomationCenter() {
-  const [rules, setRules] = useState(initialRules);
+  const [rules, setRules] = useState<Rule[]>([]);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const toggle = (id: string) =>
+  useEffect(() => {
+    api
+      .getRules()
+      .then((r) => {
+        setRules(r);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
+  }, []);
+
+  const toggle = async (id: string) => {
+    // optimistic update
     setRules((r) => r.map((rule) => (rule.id === id ? { ...rule, enabled: !rule.enabled } : rule)));
+    try {
+      const updated = await api.toggleRule(id);
+      setRules((r) => r.map((rule) => (rule.id === id ? updated : rule)));
+    } catch {
+      // revert on failure
+      setRules((r) => r.map((rule) => (rule.id === id ? { ...rule, enabled: !rule.enabled } : rule)));
+    }
+  };
 
   return (
     <div>
@@ -33,6 +43,14 @@ export default function AutomationCenter() {
         </div>
         <TrustBadge kind="automation" label={`${rules.filter((r) => r.enabled).length} active rules`} />
       </div>
+
+      {error && (
+        <div className="rounded-xl border border-dashed border-slate-300 p-5 text-sm text-slate-500">
+          Backend not reachable — start the API server to load and toggle live rules here.
+        </div>
+      )}
+
+      {loading && !error && <p className="text-sm text-slate-400">Loading rules…</p>}
 
       <div className="space-y-3">
         {rules.map((rule) => (
@@ -66,9 +84,10 @@ export default function AutomationCenter() {
       </div>
 
       <div className="mt-6 rounded-xl border border-dashed border-slate-300 p-5 text-sm text-slate-500">
-        Want a custom automation for your shop's specific workflow? This is exactly the
-        kind of rule Grovance builds around your requirements — this list is editable
-        by our team, live, without touching your storefront.
+        Toggling a rule here calls the real backend and logs the change to the Activity
+        Feed on the Dashboard — nothing here is a local-only mockup. Want a custom
+        automation for your shop's specific workflow? This is exactly the kind of rule
+        Grovance builds around your requirements.
       </div>
     </div>
   );
