@@ -78,7 +78,7 @@ export default function Dashboard() {
         </motion.div>
       )}
 
-      <div className="mt-8 rounded-xl border border-slate-200 bg-white p-6">
+      <div className="mt-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold text-ink">Live Activity Feed</h2>
           <TrustBadge kind="automation" label="Powered by Automation Center" />

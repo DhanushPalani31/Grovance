@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
@@ -24,6 +25,7 @@ export default function Contact() {
     <div className="min-h-screen bg-slate-50">
       <Navbar />
       <section className="mx-auto max-w-xl px-6 py-16">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
         <h1 className="text-3xl font-bold text-ink">Get in touch</h1>
         <p className="mt-3 text-slate-600">
           Tell us about your brand and what you'd like automated. Submitting this form is
@@ -84,6 +86,7 @@ export default function Contact() {
             )}
           </form>
         )}
+        </motion.div>
       </section>
       <Footer />
       <ChatWidget />

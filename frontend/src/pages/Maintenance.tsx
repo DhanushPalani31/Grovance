@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { api, type HealthStatus, type ChangelogEntry, type Ticket } from "../lib/api";
 import TrustBadge from "../components/TrustBadge";
@@ -56,7 +57,7 @@ export default function Maintenance() {
   };
 
   return (
-    <div>
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-ink">Maintenance</h1>
@@ -66,7 +67,7 @@ export default function Maintenance() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <p className="text-xs font-medium text-slate-500">System Status</p>
           <p className="mt-2 flex items-center gap-2 text-lg font-bold text-ink">
             <span
@@ -77,13 +78,13 @@ export default function Maintenance() {
             {error ? "Backend offline" : health?.status === "ok" ? "All systems operational" : "Checking…"}
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <p className="text-xs font-medium text-slate-500">Uptime</p>
           <p className="mt-2 text-lg font-bold text-ink">
             {health ? `${Math.floor(health.uptimeSeconds)}s` : "—"}
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <p className="text-xs font-medium text-slate-500">Last Deployed</p>
           <p className="mt-2 text-lg font-bold text-ink">
             {health ? new Date(health.lastDeployedAt).toLocaleString() : "—"}
@@ -91,7 +92,7 @@ export default function Maintenance() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6">
+      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold text-ink">Support Tickets</h2>
           <TrustBadge kind="maintenance" label="Live — click a status to update it" />
@@ -143,7 +144,7 @@ export default function Maintenance() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6">
+      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold text-ink">Changelog</h2>
           <TrustBadge kind="maintenance" label="Pulled live from GitHub" />
@@ -183,6 +184,6 @@ export default function Maintenance() {
           ))}
         </ul>
       </div>
-    </div>
+    </motion.div>
   );
 }

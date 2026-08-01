@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
@@ -50,13 +51,18 @@ export default function Pricing() {
 
       <section className="mx-auto max-w-5xl px-6 pb-24">
         <div className="grid gap-6 md:grid-cols-3">
-          {tiers.map((tier) => (
-            <div
+          {tiers.map((tier, i) => (
+            <motion.div
               key={tier.name}
-              className={`rounded-xl border p-6 ${
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: i * 0.08 }}
+              whileHover={{ y: -4 }}
+              className={`rounded-xl border p-6 transition-shadow hover:shadow-lg ${
                 tier.highlighted
                   ? "border-brand bg-white shadow-lg shadow-brand/10"
-                  : "border-slate-200 bg-white"
+                  : "border-slate-200 bg-white shadow-sm"
               }`}
             >
               <h2 className="font-semibold text-ink">{tier.name}</h2>
@@ -80,7 +86,7 @@ export default function Pricing() {
               >
                 Get in touch
               </Link>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>

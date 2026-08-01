@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../lib/AuthContext";
 import TrustBadge from "../components/TrustBadge";
@@ -13,7 +14,7 @@ export default function Settings() {
   };
 
   return (
-    <div>
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-ink">Settings</h1>
@@ -22,7 +23,7 @@ export default function Settings() {
         <TrustBadge kind="maintenance" label="Account managed by Grovance" />
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-6">
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 font-semibold text-ink">Profile</h2>
         <div className="space-y-3 text-sm">
           <div className="flex justify-between border-b border-slate-100 pb-3">
@@ -40,7 +41,7 @@ export default function Settings() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6">
+      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="mb-2 font-semibold text-ink">Session</h2>
         <p className="mb-4 text-sm text-slate-500">Sign out of your Grovance workspace.</p>
         <button
@@ -51,6 +52,6 @@ export default function Settings() {
           Log out
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }

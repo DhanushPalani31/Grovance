@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { api } from "../lib/api";
 import TrustBadge from "../components/TrustBadge";
@@ -32,7 +33,7 @@ export default function ContentStudio() {
   };
 
   return (
-    <div>
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-ink">Content Studio</h1>
@@ -41,12 +42,12 @@ export default function ContentStudio() {
         <TrustBadge kind="ai" label="Powered by Claude" />
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-6">
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <label className="mb-2 block text-sm font-medium text-slate-700">Content type</label>
         <select
           value={kind}
           onChange={(e) => setKind(e.target.value)}
-          className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
         >
           {kinds.map((k) => (
             <option key={k.id} value={k.id}>
@@ -66,19 +67,29 @@ export default function ContentStudio() {
           className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
         />
 
-        <button
+        <motion.button
+          whileTap={{ scale: 0.97 }}
           onClick={generate}
           disabled={loading}
-          className="flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-dark disabled:opacity-50"
         >
           <Sparkles size={16} />
           {loading ? "Generating…" : "Generate"}
-        </button>
+        </motion.button>
 
-        {result && (
-          <div className="mt-5 rounded-lg bg-slate-50 p-4 text-sm text-slate-700">{result}</div>
-        )}
+        <AnimatePresence>
+          {result && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-5 overflow-hidden rounded-lg bg-slate-50 p-4 text-sm text-slate-700"
+            >
+              {result}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 }

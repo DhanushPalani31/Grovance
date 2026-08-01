@@ -141,4 +141,22 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
 - New Careers page (openings are clearly-flagged illustrative placeholders,
   same pattern as the testimonials — replace before real hiring use)
 
+**Google Sign-In fix + final premium polish pass:**
+- Fixed a real bug found during live testing: the Google OAuth client was being
+  constructed at module-import time, before `dotenv.config()` ran, so
+  `GOOGLE_CLIENT_ID` was always read as undefined. Switched to the same lazy
+  singleton pattern already used for the Anthropic client — verified live that
+  the endpoint now genuinely attempts token verification instead of always
+  reporting "not configured"
+- Verified the real Google Client ID loads correctly end-to-end: confirmed it's
+  embedded in the frontend build output, and confirmed the backend attempts
+  real verification against Google's servers (the only remaining error in
+  testing was this sandbox's own network egress allowlist blocking
+  `www.googleapis.com` — not an app bug; your real deployment won't have that
+  restriction)
+- Added consistent fade-in entrance animations (framer-motion) and shadow/hover
+  polish to every remaining page: AI Assistant, Content Studio, Insights,
+  Maintenance, Settings, Pricing, Contact, Terms, Privacy — matching the
+  treatment already on Dashboard, Automation Center, and the marketing pages
+
 See `PROJECT-PLAN.md` for what's next.

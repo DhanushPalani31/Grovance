@@ -6,8 +6,13 @@ import { signToken, requireAuth, type AuthedRequest } from "../lib/auth";
 
 export const authRouter = Router();
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const googleClient = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : null;
+let googleClient: OAuth2Client | null = null;
+function getGoogleClient(): OAuth2Client | null {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  if (!clientId) return null;
+  if (!googleClient) googleClient = new OAuth2Client(clientId);
+  return googleClient;
+}
 
 authRouter.post("/register", async (req, res) => {
   const { name, email, password } = req.body as { name?: string; email?: string; password?: string };
@@ -60,16 +65,17 @@ authRouter.post("/google", async (req, res) => {
   const { credential } = req.body as { credential?: string };
   if (!credential) return res.status(400).json({ error: "credential is required" });
 
-  if (!googleClient) {
+  const client = getGoogleClient();
+  if (!client) {
     return res.status(503).json({
       error: "Google Sign-In isn't configured on the server (GOOGLE_CLIENT_ID missing)",
     });
   }
 
   try {
-    const ticket = await googleClient.verifyIdToken({
+    const ticket = await client.verifyIdToken({
       idToken: credential,
-      audience: GOOGLE_CLIENT_ID,
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
     if (!payload?.sub || !payload.email) {

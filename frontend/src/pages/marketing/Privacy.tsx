@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
 
@@ -88,6 +89,7 @@ export default function Privacy() {
     <div className="flex min-h-screen flex-col bg-slate-50">
       <Navbar />
       <section className="mx-auto max-w-3xl flex-1 px-6 py-16">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
         <h1 className="text-3xl font-bold text-ink">Privacy Policy</h1>
         <p className="mt-2 text-sm text-slate-400">Last updated: {new Date().toLocaleDateString()}</p>
 
@@ -106,6 +108,7 @@ export default function Privacy() {
             </div>
           ))}
         </div>
+        </motion.div>
       </section>
       <Footer />
     </div>
