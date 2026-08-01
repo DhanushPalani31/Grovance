@@ -4,7 +4,7 @@ import { Zap, Bot, ShieldCheck, Code2, ArrowRight } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
-import Testimonials from "../../components/marketing/Testimonials";
+import Projects from "../../components/marketing/Projects";
 
 const pillars = [
   {
@@ -99,7 +99,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <Testimonials />
+      <Projects />
       <Footer />
       <ChatWidget />
     </div>

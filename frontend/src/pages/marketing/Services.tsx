@@ -157,8 +157,8 @@ export default function Services() {
 
       <section className="border-t border-slate-200 bg-slate-50 py-16">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <h2 className="text-2xl font-bold text-ink">Our work</h2>
-          <p className="mt-2 text-sm text-slate-500">One project completed so far — more in progress.</p>
+          <h2 className="text-2xl font-bold text-ink">Projects completed</h2>
+          <p className="mt-2 text-sm text-slate-500">One delivered so far — more in progress.</p>
           <motion.a
             href="https://www.nayabuilders.com"
             target="_blank"
@@ -173,12 +173,13 @@ export default function Services() {
               <div>
                 <h3 className="font-semibold text-ink">Naya Builders</h3>
                 <p className="mt-1 text-sm text-slate-500">
-                  Construction company website — Chennai, India
+                  A builder application — website for a construction company in Chennai
                 </p>
               </div>
               <ExternalLink size={18} className="shrink-0 text-slate-400" />
             </div>
             <p className="mt-3 text-sm font-medium text-brand">nayabuilders.com</p>
+            <p className="mt-2 text-xs text-slate-400">Delivered as a freelance project.</p>
           </motion.a>
         </div>
       </section>
