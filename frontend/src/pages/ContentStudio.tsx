@@ -35,7 +35,7 @@ export default function ContentStudio() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-brand-ink">Content Studio</h1>
+          <h1 className="text-2xl font-bold text-ink">Content Studio</h1>
           <p className="text-sm text-slate-500">Marketing copy, generated in seconds.</p>
         </div>
         <TrustBadge kind="ai" label="Powered by Claude" />
@@ -63,13 +63,13 @@ export default function ContentStudio() {
           onChange={(e) => setPrompt(e.target.value)}
           rows={3}
           placeholder="e.g. Handmade ceramic mug, blue glaze, $18"
-          className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-indigo focus:outline-none"
+          className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
         />
 
         <button
           onClick={generate}
           disabled={loading}
-          className="flex items-center gap-2 rounded-lg bg-brand-indigo px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50"
         >
           <Sparkles size={16} />
           {loading ? "Generating…" : "Generate"}

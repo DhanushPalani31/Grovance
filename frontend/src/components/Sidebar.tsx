@@ -42,7 +42,7 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-brand-indigo/10 text-brand-indigo"
+                  ? "bg-brand/10 text-brand"
                   : "text-slate-600 hover:bg-slate-100"
               }`
             }
@@ -52,7 +52,7 @@ export default function Sidebar() {
           </NavLink>
         ))}
       </nav>
-      <div className="m-3 rounded-lg bg-gradient-to-br from-brand-indigo to-brand-teal p-4 text-xs text-white">
+      <div className="m-3 rounded-lg bg-gradient-to-br from-brand to-accent p-4 text-xs text-white">
         <p className="font-semibold">This demo runs on Grovance</p>
         <p className="mt-1 text-white/80">
           Every widget here is a real Grovance service — automation, AI, and

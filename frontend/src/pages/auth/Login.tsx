@@ -36,7 +36,7 @@ export default function Login() {
         <Link to="/" className="mb-6 flex justify-center">
           <img src="/logo.svg" alt="Grovance" className="h-8 w-auto" />
         </Link>
-        <h1 className="text-center text-xl font-semibold text-brand-ink">Welcome back</h1>
+        <h1 className="text-center text-xl font-semibold text-ink">Welcome back</h1>
         <p className="mt-1 text-center text-sm text-slate-500">Sign in to your workspace</p>
 
         <form onSubmit={submit} className="mt-6 space-y-4">
@@ -47,7 +47,7 @@ export default function Login() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-indigo focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
             />
           </div>
           <div>
@@ -57,14 +57,14 @@ export default function Login() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-indigo focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
             />
           </div>
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-brand-indigo py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-brand py-2 text-sm font-medium text-white transition-colors hover:bg-brand-dark disabled:opacity-50"
           >
             {loading ? "Signing in…" : "Sign in"}
           </button>
@@ -72,7 +72,7 @@ export default function Login() {
 
         <p className="mt-6 text-center text-sm text-slate-500">
           Don't have an account?{" "}
-          <Link to="/signup" className="font-medium text-brand-indigo hover:underline">
+          <Link to="/signup" className="font-medium text-brand hover:underline">
             Sign up
           </Link>
         </p>

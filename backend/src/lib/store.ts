@@ -28,7 +28,7 @@ const activityLog: ActivityItem[] = [
   },
   {
     id: "3",
-    label: "AI Assistant answered a customer question about store hours",
+    label: "AI Assistant answered a customer question about business hours",
     source: "ai",
     timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
   },
@@ -55,14 +55,16 @@ export interface Rule {
   trigger: string;
   action: string;
   enabled: boolean;
+  lastTriggeredAt: string | null;
+  runCount: number;
 }
 
 const rules: Rule[] = [
-  { id: "1", trigger: "New order placed", action: "Send confirmation email to customer", enabled: true },
-  { id: "2", trigger: "Stock falls below 5 units", action: "Notify owner via WhatsApp/email", enabled: true },
-  { id: "3", trigger: "Every day at 9 PM", action: "Generate daily sales summary", enabled: true },
-  { id: "4", trigger: "Customer inactive for 30 days", action: "Send a personalized win-back offer", enabled: false },
-  { id: "5", trigger: "Every Sunday", action: "Auto-backup shop data", enabled: true },
+  { id: "1", trigger: "New order placed", action: "Send confirmation email to customer", enabled: true, lastTriggeredAt: null, runCount: 0 },
+  { id: "2", trigger: "Stock falls below 5 units", action: "Notify owner via WhatsApp/email", enabled: true, lastTriggeredAt: null, runCount: 0 },
+  { id: "3", trigger: "Every day at 9 PM", action: "Generate daily sales summary", enabled: true, lastTriggeredAt: null, runCount: 0 },
+  { id: "4", trigger: "Customer inactive for 30 days", action: "Send a personalized win-back offer", enabled: false, lastTriggeredAt: null, runCount: 0 },
+  { id: "5", trigger: "Every Sunday", action: "Auto-backup brand data", enabled: true, lastTriggeredAt: null, runCount: 0 },
 ];
 
 export interface Ticket {
@@ -90,7 +92,7 @@ const tickets: Ticket[] = [
   },
   {
     id: "GRV-102",
-    title: "Update store hours for holidays",
+    title: "Update business hours for holidays",
     status: "Resolved",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
@@ -122,6 +124,12 @@ export const store = {
     return orderValue;
   },
   getDashboardStats() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const automationEventsToday = activityLog.filter(
+      (a) => a.source === "automation" && new Date(a.timestamp) >= today
+    ).length;
+
     return {
       ordersToday: metrics.ordersToday,
       revenueToday: metrics.revenueToday,
@@ -129,6 +137,7 @@ export const store = {
       newCustomersToday: leads.length, // real: derived from actual contact-form leads
       activeAutomationRules: rules.filter((r) => r.enabled).length,
       openTickets: tickets.filter((t) => t.status !== "Resolved").length,
+      automationEventsToday,
     };
   },
   listActivity(): ActivityItem[] {
@@ -164,6 +173,13 @@ export const store = {
     const rule = rules.find((r) => r.id === id);
     if (!rule) return undefined;
     rule.enabled = !rule.enabled;
+    return rule;
+  },
+  runRule(id: string): Rule | undefined {
+    const rule = rules.find((r) => r.id === id);
+    if (!rule) return undefined;
+    rule.lastTriggeredAt = new Date().toISOString();
+    rule.runCount += 1;
     return rule;
   },
   listTickets(): Ticket[] {

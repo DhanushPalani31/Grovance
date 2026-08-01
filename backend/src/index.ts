@@ -36,7 +36,7 @@ cron.schedule("0 21 * * *", () => {
 
 // Runs every Sunday at midnight — the "auto-backup" rule.
 cron.schedule("0 0 * * 0", () => {
-  store.logActivity({ label: "Weekly shop data backup completed", source: "automation" });
+  store.logActivity({ label: "Weekly brand data backup completed", source: "automation" });
 });
 
 // Simulates a new order arriving every ~10 minutes, so the Dashboard's

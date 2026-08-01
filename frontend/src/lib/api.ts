@@ -50,6 +50,8 @@ export interface Rule {
   trigger: string;
   action: string;
   enabled: boolean;
+  lastTriggeredAt: string | null;
+  runCount: number;
 }
 
 export interface InsightsResponse {
@@ -86,6 +88,7 @@ export interface DashboardStats {
   newCustomersToday: number;
   activeAutomationRules: number;
   openTickets: number;
+  automationEventsToday: number;
 }
 
 export const api = {
@@ -94,6 +97,10 @@ export const api = {
   getRules: () => request<Rule[]>("/api/automation/rules"),
   toggleRule: (id: string) =>
     request<Rule>(`/api/automation/rules/${id}/toggle`, { method: "POST" }),
+  runRule: (id: string) =>
+    request<{ rule: Rule; activity: ActivityItem }>(`/api/automation/rules/${id}/run`, {
+      method: "POST",
+    }),
   getStats: () => request<DashboardStats>("/api/automation/stats"),
   getChangelog: () => request<ChangelogEntry[]>("/api/changelog"),
   getTickets: () => request<Ticket[]>("/api/tickets"),
@@ -115,7 +122,7 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
   me: () => request<AuthUser>("/api/auth/me"),
-  sendChatMessage: (message: string, persona: "shop" | "marketing" = "shop") =>
+  sendChatMessage: (message: string, persona: "brand" | "marketing" = "brand") =>
     request<AIChatResponse>("/api/ai/chat", {
       method: "POST",
       body: JSON.stringify({ message, persona }),

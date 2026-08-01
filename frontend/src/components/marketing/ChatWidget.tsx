@@ -45,7 +45,7 @@ export default function ChatWidget() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full bg-brand-indigo px-5 py-3 text-sm font-medium text-white shadow-lg shadow-indigo-600/30 hover:bg-indigo-700"
+        className="fixed bottom-6 right-6 flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white shadow-lg shadow-brand/30 hover:bg-brand-dark"
       >
         <MessageCircle size={18} />
         Try our AI
@@ -55,7 +55,7 @@ export default function ChatWidget() {
 
   return (
     <div className="fixed bottom-6 right-6 flex h-[28rem] w-80 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl">
-      <div className="flex items-center justify-between bg-gradient-to-r from-brand-indigo to-brand-teal px-4 py-3 text-white">
+      <div className="flex items-center justify-between bg-gradient-to-r from-brand to-accent px-4 py-3 text-white">
         <div className="flex items-center gap-2 text-sm font-semibold">
           <Bot size={16} />
           Grovance Assistant
@@ -70,7 +70,7 @@ export default function ChatWidget() {
           <div
             key={i}
             className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
-              m.role === "user" ? "ml-auto bg-brand-indigo text-white" : "bg-slate-100 text-slate-700"
+              m.role === "user" ? "ml-auto bg-brand text-white" : "bg-slate-100 text-slate-700"
             }`}
           >
             {m.content}
@@ -85,11 +85,11 @@ export default function ChatWidget() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()}
           placeholder="Ask a question…"
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-brand-indigo focus:outline-none"
+          className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-brand focus:outline-none"
         />
         <button
           onClick={send}
-          className="rounded-lg bg-brand-indigo px-3 py-1.5 text-white hover:bg-indigo-700"
+          className="rounded-lg bg-brand px-3 py-1.5 text-white hover:bg-brand-dark"
           aria-label="Send"
         >
           <Send size={14} />

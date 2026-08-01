@@ -50,8 +50,8 @@ export default function Maintenance() {
   };
 
   const statusStyles: Record<Ticket["status"], string> = {
-    Resolved: "bg-teal-50 text-brand-teal",
-    "In Progress": "bg-amber-50 text-amber-700",
+    Resolved: "bg-success/10 text-success",
+    "In Progress": "bg-warning/10 text-warning",
     Open: "bg-slate-100 text-slate-600",
   };
 
@@ -59,7 +59,7 @@ export default function Maintenance() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-brand-ink">Maintenance</h1>
+          <h1 className="text-2xl font-bold text-ink">Maintenance</h1>
           <p className="text-sm text-slate-500">Your infrastructure, transparently.</p>
         </div>
         <TrustBadge kind="maintenance" label="Live system status" />
@@ -68,10 +68,10 @@ export default function Maintenance() {
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-xl border border-slate-200 bg-white p-5">
           <p className="text-xs font-medium text-slate-500">System Status</p>
-          <p className="mt-2 flex items-center gap-2 text-lg font-bold text-brand-ink">
+          <p className="mt-2 flex items-center gap-2 text-lg font-bold text-ink">
             <span
               className={`h-2.5 w-2.5 rounded-full ${
-                error ? "bg-red-400" : health?.status === "ok" ? "bg-brand-teal" : "bg-amber-400"
+                error ? "bg-danger" : health?.status === "ok" ? "bg-success" : "bg-warning"
               }`}
             />
             {error ? "Backend offline" : health?.status === "ok" ? "All systems operational" : "Checking…"}
@@ -79,13 +79,13 @@ export default function Maintenance() {
         </div>
         <div className="rounded-xl border border-slate-200 bg-white p-5">
           <p className="text-xs font-medium text-slate-500">Uptime</p>
-          <p className="mt-2 text-lg font-bold text-brand-ink">
+          <p className="mt-2 text-lg font-bold text-ink">
             {health ? `${Math.floor(health.uptimeSeconds)}s` : "—"}
           </p>
         </div>
         <div className="rounded-xl border border-slate-200 bg-white p-5">
           <p className="text-xs font-medium text-slate-500">Last Deployed</p>
-          <p className="mt-2 text-lg font-bold text-brand-ink">
+          <p className="mt-2 text-lg font-bold text-ink">
             {health ? new Date(health.lastDeployedAt).toLocaleString() : "—"}
           </p>
         </div>
@@ -93,7 +93,7 @@ export default function Maintenance() {
 
       <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-semibold text-brand-ink">Support Tickets</h2>
+          <h2 className="font-semibold text-ink">Support Tickets</h2>
           <TrustBadge kind="maintenance" label="Live — click a status to update it" />
         </div>
 
@@ -103,12 +103,12 @@ export default function Maintenance() {
             onChange={(e) => setNewTitle(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && addTicket()}
             placeholder="Describe an issue…"
-            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-indigo focus:outline-none"
+            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
           />
           <button
             onClick={addTicket}
             disabled={creating}
-            className="flex items-center gap-1 rounded-lg bg-brand-indigo px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+            className="flex items-center gap-1 rounded-lg bg-brand px-3 py-2 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50"
           >
             <Plus size={14} />
             {creating ? "Adding…" : "Open ticket"}
@@ -145,7 +145,7 @@ export default function Maintenance() {
 
       <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-semibold text-brand-ink">Changelog</h2>
+          <h2 className="font-semibold text-ink">Changelog</h2>
           <TrustBadge kind="maintenance" label="Pulled live from GitHub" />
         </div>
 
@@ -168,7 +168,7 @@ export default function Maintenance() {
                   href={c.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sm font-medium text-slate-700 hover:text-brand-indigo hover:underline"
+                  className="text-sm font-medium text-slate-700 hover:text-brand hover:underline"
                 >
                   {c.message}
                 </a>

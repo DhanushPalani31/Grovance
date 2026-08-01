@@ -12,7 +12,7 @@ business, and "you" refers to that business.`,
   {
     title: "2. Description of the Service",
     body: `Grovance provides automation tooling, AI-powered features, and ongoing maintenance
-support for local shops and brands, delivered through a web-based client portal. Specific
+support for brands and growing businesses, delivered through a web-based client portal. Specific
 features made available to your account (automation rules, AI assistant, content generation,
 insights, ticketing) may vary based on your plan and configuration.`,
   },
@@ -100,7 +100,7 @@ export default function Terms() {
     <div className="flex min-h-screen flex-col bg-slate-50">
       <Navbar />
       <section className="mx-auto max-w-3xl flex-1 px-6 py-16">
-        <h1 className="text-3xl font-bold text-brand-ink">Terms of Service</h1>
+        <h1 className="text-3xl font-bold text-ink">Terms of Service</h1>
         <p className="mt-2 text-sm text-slate-400">Last updated: {new Date().toLocaleDateString()}</p>
 
         <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
@@ -112,7 +112,7 @@ export default function Terms() {
         <div className="mt-8 space-y-6 text-sm leading-relaxed text-slate-600">
           {sections.map((s) => (
             <div key={s.title}>
-              <h2 className="mb-2 font-semibold text-brand-ink">{s.title}</h2>
+              <h2 className="mb-2 font-semibold text-ink">{s.title}</h2>
               <p className="whitespace-pre-line">{s.body}</p>
             </div>
           ))}

@@ -27,6 +27,18 @@ automationRouter.post("/rules/:id/toggle", (req, res) => {
   res.json(rule);
 });
 
+automationRouter.post("/rules/:id/run", (req, res) => {
+  const rule = store.runRule(req.params.id);
+  if (!rule) return res.status(404).json({ error: "rule not found" });
+
+  const entry = store.logActivity({
+    label: `Rule fired: ${rule.trigger} → ${rule.action}`,
+    source: "automation",
+  });
+
+  res.json({ rule, activity: entry });
+});
+
 // Demo endpoint: simulates a workflow trigger firing (e.g. called by the
 // cron scheduler in index.ts, or by a webhook from an order system).
 automationRouter.post("/trigger", (req, res) => {

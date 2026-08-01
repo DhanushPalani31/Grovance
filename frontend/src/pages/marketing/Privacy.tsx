@@ -88,7 +88,7 @@ export default function Privacy() {
     <div className="flex min-h-screen flex-col bg-slate-50">
       <Navbar />
       <section className="mx-auto max-w-3xl flex-1 px-6 py-16">
-        <h1 className="text-3xl font-bold text-brand-ink">Privacy Policy</h1>
+        <h1 className="text-3xl font-bold text-ink">Privacy Policy</h1>
         <p className="mt-2 text-sm text-slate-400">Last updated: {new Date().toLocaleDateString()}</p>
 
         <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
@@ -101,7 +101,7 @@ export default function Privacy() {
         <div className="mt-8 space-y-6 text-sm leading-relaxed text-slate-600">
           {sections.map((s) => (
             <div key={s.title}>
-              <h2 className="mb-2 font-semibold text-brand-ink">{s.title}</h2>
+              <h2 className="mb-2 font-semibold text-ink">{s.title}</h2>
               <p className="whitespace-pre-line">{s.body}</p>
             </div>
           ))}

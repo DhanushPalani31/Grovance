@@ -8,7 +8,7 @@ const tiers = [
   {
     name: "Starter",
     price: "Custom",
-    tagline: "For a single shop getting automation basics in place.",
+    tagline: "For a single brand getting automation basics in place.",
     features: ["Core automation rules", "Maintenance & support", "Monthly check-ins"],
   },
   {
@@ -41,9 +41,9 @@ export default function Pricing() {
     <div className="min-h-screen bg-slate-50">
       <Navbar />
       <section className="mx-auto max-w-4xl px-6 py-16 text-center">
-        <h1 className="text-3xl font-bold text-brand-ink">Pricing</h1>
+        <h1 className="text-3xl font-bold text-ink">Pricing</h1>
         <p className="mt-3 text-slate-600">
-          Every engagement is scoped around what your shop actually needs — these are
+          Every engagement is scoped around what your brand actually needs — these are
           starting points for a conversation, not a fixed menu.
         </p>
       </section>
@@ -55,17 +55,17 @@ export default function Pricing() {
               key={tier.name}
               className={`rounded-xl border p-6 ${
                 tier.highlighted
-                  ? "border-brand-indigo bg-white shadow-lg shadow-indigo-100"
+                  ? "border-brand bg-white shadow-lg shadow-brand/10"
                   : "border-slate-200 bg-white"
               }`}
             >
-              <h2 className="font-semibold text-brand-ink">{tier.name}</h2>
-              <p className="mt-1 text-2xl font-bold text-brand-ink">{tier.price}</p>
+              <h2 className="font-semibold text-ink">{tier.name}</h2>
+              <p className="mt-1 text-2xl font-bold text-ink">{tier.price}</p>
               <p className="mt-2 text-sm text-slate-500">{tier.tagline}</p>
               <ul className="mt-4 space-y-2">
                 {tier.features.map((f) => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-600">
-                    <Check size={14} className="text-brand-teal" />
+                    <Check size={14} className="text-success" />
                     {f}
                   </li>
                 ))}
@@ -74,7 +74,7 @@ export default function Pricing() {
                 to="/contact"
                 className={`mt-6 block rounded-lg px-4 py-2 text-center text-sm font-medium ${
                   tier.highlighted
-                    ? "bg-brand-indigo text-white hover:bg-indigo-700"
+                    ? "bg-brand text-white hover:bg-brand-dark"
                     : "border border-slate-300 text-slate-700 hover:bg-slate-50"
                 }`}
               >

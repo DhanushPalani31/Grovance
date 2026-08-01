@@ -103,7 +103,23 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
 **Known placeholder content to swap before a real launch:**
 - Landing page testimonials are clearly-labeled illustrative quotes, not real
   customers (see comment in `Testimonials.tsx`)
-- Terms/Privacy pages are structural placeholders, not reviewed legal text
+- Terms/Privacy pages are full realistic drafts but still need attorney review
+  and jurisdiction-specific details filled in (flagged inline)
 - `JWT_SECRET` in `.env.example` must be replaced with a real secret in production
+
+**Latest polish pass:**
+- All "shop"/"store" language replaced with "brand"/"business" throughout the
+  app and AI system prompts; demo entity renamed to "Aurora & Co."
+- New consistent design system: semantic color tokens (`success` = green,
+  `warning` = amber, `danger` = red, `info` = blue, `brand` = navy) used the
+  same way everywhere instead of scattered teal/indigo; Inter font for
+  premium typography; framer-motion animations across stats, cards, and
+  page transitions
+- Automation Center now has a **Run Now** button per rule with `lastTriggeredAt`
+  / `runCount` tracking and toast confirmation — click it, then check the
+  Dashboard's Activity Feed to see the same event land there live
+- Added a 4th service, **Custom App Development**, to the Landing and
+  Services pages — bespoke builds around client requirements, with Claude
+  integrated only where it adds real value
 
 See `PROJECT-PLAN.md` for what's next.

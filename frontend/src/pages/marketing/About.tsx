@@ -13,9 +13,9 @@ export default function About() {
         transition={{ duration: 0.5 }}
         className="mx-auto max-w-3xl flex-1 px-6 py-16"
       >
-        <h1 className="text-3xl font-bold text-brand-ink">About Grovance</h1>
+        <h1 className="text-3xl font-bold text-ink">About Grovance</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
-          Grovance was built on a simple idea: local shops deserve the same automation
+          Grovance was built on a simple idea: brands deserve the same automation
           and AI tooling that large e-commerce brands take for granted, without the
           enterprise price tag or the black-box mystery. We build each engagement
           around what a specific business actually needs, then stay on to run and
@@ -30,12 +30,12 @@ export default function About() {
         <div className="mt-10 grid gap-6 sm:grid-cols-3">
           {[
             { label: "Founded", value: "2025" },
-            { label: "Focus", value: "Local shops & brands" },
+            { label: "Focus", value: "Brands & growing businesses" },
             { label: "Approach", value: "Automation + AI + Maintenance" },
           ].map((item) => (
             <div key={item.label} className="rounded-xl border border-slate-200 bg-white p-5 text-center">
               <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{item.label}</p>
-              <p className="mt-2 font-semibold text-brand-ink">{item.value}</p>
+              <p className="mt-2 font-semibold text-ink">{item.value}</p>
             </div>
           ))}
         </div>

@@ -24,7 +24,7 @@ export default function Navbar() {
               to={l.to}
               className={({ isActive }) =>
                 `text-sm font-medium transition-colors ${
-                  isActive ? "text-brand-indigo" : "text-slate-600 hover:text-brand-indigo"
+                  isActive ? "text-brand" : "text-slate-600 hover:text-brand"
                 }`
               }
             >
@@ -34,13 +34,13 @@ export default function Navbar() {
         </nav>
         <div className="flex items-center gap-3">
           {!user && (
-            <Link to="/login" className="hidden text-sm font-medium text-slate-600 hover:text-brand-indigo sm:block">
+            <Link to="/login" className="hidden text-sm font-medium text-slate-600 hover:text-brand sm:block">
               Log in
             </Link>
           )}
           <Link
             to="/portal"
-            className="rounded-lg bg-brand-indigo px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+            className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-dark"
           >
             {user ? "Go to Portal" : "View Live Demo"}
           </Link>

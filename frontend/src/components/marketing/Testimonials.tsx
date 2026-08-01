@@ -8,19 +8,19 @@ const testimonials = [
     quote:
       "The automation rules alone saved us hours every week — order confirmations just happen now.",
     name: "Priya M.",
-    role: "Owner, a home goods shop",
+    role: "Founder, a home goods brand",
   },
   {
     quote:
       "Our customers get instant answers from the AI assistant even after we've closed for the day.",
     name: "Daniel R.",
-    role: "Owner, a specialty foods store",
+    role: "Founder, a specialty foods brand",
   },
   {
     quote:
       "What sold me was being able to see the automation and maintenance working live, not just hear about it.",
     name: "Aisha K.",
-    role: "Owner, a boutique clothing brand",
+    role: "Founder, a boutique clothing brand",
   },
 ];
 
@@ -28,8 +28,8 @@ export default function Testimonials() {
   return (
     <section className="border-t border-slate-200 bg-slate-50 py-16">
       <div className="mx-auto max-w-6xl px-6">
-        <h2 className="text-center text-2xl font-bold text-brand-ink">
-          What shop owners are saying
+        <h2 className="text-center text-2xl font-bold text-ink">
+          What our clients are saying
         </h2>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {testimonials.map((t, i) => (
@@ -47,7 +47,7 @@ export default function Testimonials() {
                 ))}
               </div>
               <p className="text-sm text-slate-600">"{t.quote}"</p>
-              <p className="mt-4 text-sm font-medium text-brand-ink">{t.name}</p>
+              <p className="mt-4 text-sm font-medium text-ink">{t.name}</p>
               <p className="text-xs text-slate-400">{t.role}</p>
             </motion.div>
           ))}

@@ -3,15 +3,15 @@ import { Zap, Bot, ShieldCheck } from "lucide-react";
 const styles = {
   automation: {
     icon: Zap,
-    classes: "bg-amber-50 text-amber-700 border-amber-200",
+    classes: "bg-info/10 text-info border-info/30",
   },
   ai: {
     icon: Bot,
-    classes: "bg-indigo-50 text-brand-indigo border-indigo-200",
+    classes: "bg-brand/10 text-brand border-brand/30",
   },
   maintenance: {
     icon: ShieldCheck,
-    classes: "bg-teal-50 text-brand-teal border-teal-200",
+    classes: "bg-accent/10 text-accent border-accent/30",
   },
 } as const;
 
