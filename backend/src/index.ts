@@ -5,6 +5,7 @@ import cron from "node-cron";
 import { healthRouter } from "./routes/health";
 import { automationRouter } from "./routes/automation";
 import { aiRouter } from "./routes/ai";
+import { leadsRouter } from "./routes/leads";
 import { store } from "./lib/store";
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use("/api/health", healthRouter);
 app.use("/api/automation", automationRouter);
 app.use("/api/ai", aiRouter);
+app.use("/api/leads", leadsRouter);
 
 // --- Automation Center: real scheduled jobs, not a mockup ---
 // Runs every day at 9pm to demonstrate the "daily sales summary" rule

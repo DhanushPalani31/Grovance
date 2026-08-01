@@ -15,10 +15,17 @@ A fully decoupled two-service architecture:
 
 ```
 grovance/
-├── frontend/   React + Vite + TypeScript + Tailwind — the client portal UI
-├── backend/    Node.js + Express + TypeScript — API, automation jobs, AI routes
+├── frontend/   React + Vite + TypeScript + Tailwind
+│   ├── /            Public marketing site (Landing, Services, Pricing, Contact)
+│   └── /portal/*    Client portal — the live demo (Dashboard, Automation Center,
+│                     AI Assistant, Content Studio, Insights, Maintenance)
+├── backend/    Node.js + Express + TypeScript — API, automation jobs, AI routes, leads
 └── PROJECT-PLAN.md   Full build plan, phases, and roadmap
 ```
+
+The marketing site isn't just a brochure — it embeds a live chat widget backed by the
+same Claude endpoint the portal uses, and the contact form writes straight into the
+automation activity log, same as any other workflow rule.
 
 See `PROJECT-PLAN.md` for the full plan, feature breakdown, and phased roadmap.
 
@@ -62,5 +69,8 @@ external keys needed.
 
 ## Status
 
-Phase 1 (foundation) complete: both services scaffolded, building, and
-communicating. See `PROJECT-PLAN.md` for what's next.
+- **Phase 1 (foundation):** complete — both services scaffolded, building, and communicating.
+- **Phase 2 (public marketing site):** complete — Landing/Services/Pricing/Contact pages,
+  live embedded AI widget, and a contact form wired into the automation activity log.
+
+See `PROJECT-PLAN.md` for what's next.

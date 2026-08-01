@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import {
   LayoutDashboard,
   Zap,
@@ -6,15 +6,16 @@ import {
   PenSquare,
   LineChart,
   ShieldCheck,
+  ArrowLeft,
 } from "lucide-react";
 
 const links = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { to: "/automation", label: "Automation Center", icon: Zap },
-  { to: "/ai-assistant", label: "AI Assistant", icon: Bot },
-  { to: "/content-studio", label: "Content Studio", icon: PenSquare },
-  { to: "/insights", label: "Insights", icon: LineChart },
-  { to: "/maintenance", label: "Maintenance", icon: ShieldCheck },
+  { to: "/portal", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/portal/automation", label: "Automation Center", icon: Zap },
+  { to: "/portal/ai-assistant", label: "AI Assistant", icon: Bot },
+  { to: "/portal/content-studio", label: "Content Studio", icon: PenSquare },
+  { to: "/portal/insights", label: "Insights", icon: LineChart },
+  { to: "/portal/maintenance", label: "Maintenance", icon: ShieldCheck },
 ];
 
 export default function Sidebar() {
@@ -23,6 +24,13 @@ export default function Sidebar() {
       <div className="flex items-center gap-2 px-6 py-5">
         <img src="/logo.svg" alt="Grovance" className="h-8 w-auto" />
       </div>
+      <Link
+        to="/"
+        className="mx-3 mb-2 flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-100"
+      >
+        <ArrowLeft size={14} />
+        Back to site
+      </Link>
       <nav className="flex-1 space-y-1 px-3">
         {links.map(({ to, label, icon: Icon, end }) => (
           <NavLink

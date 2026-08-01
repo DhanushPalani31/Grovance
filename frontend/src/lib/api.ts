@@ -32,14 +32,19 @@ export interface AIChatResponse {
 export const api = {
   getHealth: () => request<HealthStatus>("/api/health"),
   getActivity: () => request<ActivityItem[]>("/api/automation/activity"),
-  sendChatMessage: (message: string) =>
+  sendChatMessage: (message: string, persona: "shop" | "marketing" = "shop") =>
     request<AIChatResponse>("/api/ai/chat", {
       method: "POST",
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message, persona }),
     }),
   generateContent: (prompt: string, kind: string) =>
     request<{ result: string }>("/api/ai/generate", {
       method: "POST",
       body: JSON.stringify({ prompt, kind }),
+    }),
+  submitLead: (name: string, email: string, message: string) =>
+    request<{ received: boolean; id: string }>("/api/leads", {
+      method: "POST",
+      body: JSON.stringify({ name, email, message }),
     }),
 };

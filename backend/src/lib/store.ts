@@ -40,6 +40,16 @@ const activityLog: ActivityItem[] = [
   },
 ];
 
+export interface Lead {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  createdAt: string;
+}
+
+const leads: Lead[] = [];
+
 export const store = {
   listActivity(): ActivityItem[] {
     return [...activityLog].sort(
@@ -54,6 +64,18 @@ export const store = {
     };
     activityLog.unshift(entry);
     return entry;
+  },
+  addLead(lead: Omit<Lead, "id" | "createdAt">) {
+    const entry: Lead = {
+      ...lead,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+    };
+    leads.unshift(entry);
+    return entry;
+  },
+  listLeads(): Lead[] {
+    return [...leads];
   },
 };
 
