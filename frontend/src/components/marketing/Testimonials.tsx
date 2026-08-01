@@ -1,57 +1,33 @@
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
-
-// NOTE: These are illustrative placeholder quotes for the demo, not real customers.
-// Replace with real, consented customer testimonials before using this commercially.
-const testimonials = [
-  {
-    quote:
-      "The automation rules alone saved us hours every week — order confirmations just happen now.",
-    name: "Priya M.",
-    role: "Founder, a home goods brand",
-  },
-  {
-    quote:
-      "Our customers get instant answers from the AI assistant even after we've closed for the day.",
-    name: "Daniel R.",
-    role: "Founder, a specialty foods brand",
-  },
-  {
-    quote:
-      "What sold me was being able to see the automation and maintenance working live, not just hear about it.",
-    name: "Aisha K.",
-    role: "Founder, a boutique clothing brand",
-  },
-];
+import { ExternalLink } from "lucide-react";
 
 export default function Testimonials() {
   return (
     <section className="border-t border-slate-200 bg-slate-50 py-16">
-      <div className="mx-auto max-w-6xl px-6">
-        <h2 className="text-center text-2xl font-bold text-ink">
-          What our clients are saying
-        </h2>
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {testimonials.map((t, i) => (
-            <motion.div
-              key={t.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="rounded-xl border border-slate-200 bg-white p-6"
-            >
-              <div className="mb-3 flex gap-0.5 text-amber-400">
-                {Array.from({ length: 5 }).map((_, idx) => (
-                  <Star key={idx} size={14} fill="currentColor" />
-                ))}
-              </div>
-              <p className="text-sm text-slate-600">"{t.quote}"</p>
-              <p className="mt-4 text-sm font-medium text-ink">{t.name}</p>
-              <p className="text-xs text-slate-400">{t.role}</p>
-            </motion.div>
-          ))}
-        </div>
+      <div className="mx-auto max-w-3xl px-6 text-center">
+        <h2 className="text-2xl font-bold text-ink">Our work</h2>
+        <p className="mt-2 text-sm text-slate-500">One project completed so far — more in progress.</p>
+
+        <motion.a
+          href="https://www.nayabuilders.com"
+          target="_blank"
+          rel="noreferrer"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+          whileHover={{ y: -3 }}
+          className="mt-8 block rounded-xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-shadow hover:shadow-md"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-ink">Naya Builders</h3>
+              <p className="mt-1 text-sm text-slate-500">Construction company website — Chennai, India</p>
+            </div>
+            <ExternalLink size={18} className="shrink-0 text-slate-400" />
+          </div>
+          <p className="mt-3 text-sm font-medium text-brand">nayabuilders.com</p>
+        </motion.a>
       </div>
     </section>
   );

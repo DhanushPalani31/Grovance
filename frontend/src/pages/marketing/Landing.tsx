@@ -99,23 +99,6 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="border-t border-slate-200 bg-white py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mx-auto max-w-3xl px-6 text-center"
-        >
-          <h2 className="text-2xl font-bold text-ink">This isn't a mockup</h2>
-          <p className="mt-3 text-slate-600">
-            The chat widget on this page, the demo portal's automation rules, the
-            AI-generated content, the live status page — every one of them is calling a
-            real Grovance backend right now. What you try here is what you get.
-          </p>
-        </motion.div>
-      </section>
-
       <Testimonials />
       <Footer />
       <ChatWidget />

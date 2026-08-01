@@ -31,12 +31,19 @@ export default function About() {
           {[
             { label: "Founded", value: "2025" },
             { label: "Focus", value: "Brands & growing businesses" },
-            { label: "Approach", value: "Automation + AI + Maintenance" },
-          ].map((item) => (
-            <div key={item.label} className="rounded-xl border border-slate-200 bg-white p-5 text-center">
+            { label: "Approach", value: "Custom Apps + Automation + AI + Maintenance" },
+          ].map((item, i) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: i * 0.08 }}
+              className="rounded-xl border border-slate-200 bg-white p-5 text-center shadow-sm"
+            >
               <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{item.label}</p>
-              <p className="mt-2 font-semibold text-ink">{item.value}</p>
-            </div>
+              <p className="mt-2 text-sm font-semibold text-ink">{item.value}</p>
+            </motion.div>
           ))}
         </div>
       </motion.section>

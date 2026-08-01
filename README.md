@@ -159,4 +159,18 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
   Maintenance, Settings, Pricing, Contact, Terms, Privacy — matching the
   treatment already on Dashboard, Automation Center, and the marketing pages
 
+**Content fixes + final local verification:**
+- Testimonials section replaced entirely: removed the two fabricated illustrative
+  quotes and rewrote it as a factual "Our Work" project spotlight for Naya
+  Builders instead — deliberately not inventing a first-person quote attributed
+  to a real, identifiable business without their input
+- About page's "Approach" stat now reads "Custom Apps + Automation + AI +
+  Maintenance", reflecting all four services
+- Removed the "This isn't a mockup" section from the Landing page per request
+- Final local verification pass: ran the actual production build (`vite preview`)
+  alongside the backend simultaneously and confirmed every route returns
+  HTTP 200 (`/`, `/services`, `/about`, `/careers`, `/login`), confirmed the
+  page title renders correctly, and confirmed `/api/health` responds — a real
+  end-to-end check of the built app, not just `tsc`/`vite build` passing
+
 See `PROJECT-PLAN.md` for what's next.
