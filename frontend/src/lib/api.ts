@@ -49,6 +49,14 @@ export interface ChangelogEntry {
   url: string;
 }
 
+export interface Ticket {
+  id: string;
+  title: string;
+  status: "Open" | "In Progress" | "Resolved";
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const api = {
   getHealth: () => request<HealthStatus>("/api/health"),
   getActivity: () => request<ActivityItem[]>("/api/automation/activity"),
@@ -56,6 +64,14 @@ export const api = {
   toggleRule: (id: string) =>
     request<Rule>(`/api/automation/rules/${id}/toggle`, { method: "POST" }),
   getChangelog: () => request<ChangelogEntry[]>("/api/changelog"),
+  getTickets: () => request<Ticket[]>("/api/tickets"),
+  createTicket: (title: string) =>
+    request<Ticket>("/api/tickets", { method: "POST", body: JSON.stringify({ title }) }),
+  updateTicketStatus: (id: string, status: Ticket["status"]) =>
+    request<Ticket>(`/api/tickets/${id}/status`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    }),
   sendChatMessage: (message: string, persona: "shop" | "marketing" = "shop") =>
     request<AIChatResponse>("/api/ai/chat", {
       method: "POST",

@@ -80,10 +80,10 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
   `/api/ai/insights` endpoint that feeds Claude the shop's actual activity log and
   rule/lead stats, generating a genuine on-demand summary instead of static copy.
 
-- **Phase 6 (maintenance/trust layer):** mostly complete — `/api/health` status,
-  the Maintenance page UI, and a **real changelog widget pulling live commit history
-  from the GitHub API** (`/api/changelog`, cached 5 min, gracefully degrades on
-  rate-limit or network failure). Support tickets are still placeholder data —
-  a real ticketing backend is the one piece left here.
+- **Phase 6 (maintenance/trust layer):** complete — `/api/health` status, a real
+  changelog widget pulling live commit history from the GitHub API, and a real
+  ticketing system (`GET/POST /api/tickets`, `PATCH /api/tickets/:id/status`) —
+  tickets can be opened and their status advanced live, with every action logged
+  to the shared activity feed.
 
 See `PROJECT-PLAN.md` for what's next.

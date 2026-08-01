@@ -9,7 +9,7 @@
 export interface ActivityItem {
   id: string;
   label: string;
-  source: "automation" | "ai" | "system";
+  source: "automation" | "ai" | "system" | "maintenance";
   timestamp: string;
 }
 
@@ -54,6 +54,39 @@ const rules: Rule[] = [
   { id: "4", trigger: "Customer inactive for 30 days", action: "Send a personalized win-back offer", enabled: false },
   { id: "5", trigger: "Every Sunday", action: "Auto-backup shop data", enabled: true },
 ];
+
+export interface Ticket {
+  id: string;
+  title: string;
+  status: "Open" | "In Progress" | "Resolved";
+  createdAt: string;
+  updatedAt: string;
+}
+
+const tickets: Ticket[] = [
+  {
+    id: "GRV-100",
+    title: "Fix product image upload",
+    status: "Resolved",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
+    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 70).toISOString(),
+  },
+  {
+    id: "GRV-101",
+    title: "Add new payment method",
+    status: "In Progress",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString(),
+  },
+  {
+    id: "GRV-102",
+    title: "Update store hours for holidays",
+    status: "Resolved",
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
+    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+  },
+];
+let ticketCounter = 103;
 
 export interface Lead {
   id: string;
@@ -100,6 +133,29 @@ export const store = {
     if (!rule) return undefined;
     rule.enabled = !rule.enabled;
     return rule;
+  },
+  listTickets(): Ticket[] {
+    return [...tickets].sort(
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+  },
+  createTicket(title: string): Ticket {
+    const ticket: Ticket = {
+      id: `GRV-${ticketCounter++}`,
+      title,
+      status: "Open",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    tickets.push(ticket);
+    return ticket;
+  },
+  updateTicketStatus(id: string, status: Ticket["status"]): Ticket | undefined {
+    const ticket = tickets.find((t) => t.id === id);
+    if (!ticket) return undefined;
+    ticket.status = status;
+    ticket.updatedAt = new Date().toISOString();
+    return ticket;
   },
 };
 

@@ -1,29 +1,59 @@
 import { useEffect, useState } from "react";
-import { api, type HealthStatus, type ChangelogEntry } from "../lib/api";
+import { Plus } from "lucide-react";
+import { api, type HealthStatus, type ChangelogEntry, type Ticket } from "../lib/api";
 import TrustBadge from "../components/TrustBadge";
-
-const tickets = [
-  { id: "GRV-102", title: "Update store hours for holidays", status: "Resolved", time: "2h" },
-  { id: "GRV-101", title: "Add new payment method", status: "In Progress", time: "1d" },
-  { id: "GRV-100", title: "Fix product image upload", status: "Resolved", time: "3d" },
-];
 
 export default function Maintenance() {
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [error, setError] = useState(false);
   const [changelog, setChangelog] = useState<ChangelogEntry[]>([]);
   const [changelogError, setChangelogError] = useState(false);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [ticketsError, setTicketsError] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-    api
-      .getHealth()
-      .then(setHealth)
-      .catch(() => setError(true));
-    api
-      .getChangelog()
-      .then(setChangelog)
-      .catch(() => setChangelogError(true));
+    api.getHealth().then(setHealth).catch(() => setError(true));
+    api.getChangelog().then(setChangelog).catch(() => setChangelogError(true));
+    api.getTickets().then(setTickets).catch(() => setTicketsError(true));
   }, []);
+
+  const addTicket = async () => {
+    if (!newTitle.trim()) return;
+    setCreating(true);
+    try {
+      const ticket = await api.createTicket(newTitle);
+      setTickets((t) => [ticket, ...t]);
+      setNewTitle("");
+    } catch {
+      setTicketsError(true);
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const cycleStatus = async (ticket: Ticket) => {
+    const next: Record<Ticket["status"], Ticket["status"]> = {
+      Open: "In Progress",
+      "In Progress": "Resolved",
+      Resolved: "Open",
+    };
+    const newStatus = next[ticket.status];
+    setTickets((t) => t.map((x) => (x.id === ticket.id ? { ...x, status: newStatus } : x)));
+    try {
+      const updated = await api.updateTicketStatus(ticket.id, newStatus);
+      setTickets((t) => t.map((x) => (x.id === ticket.id ? updated : x)));
+    } catch {
+      setTickets((t) => t.map((x) => (x.id === ticket.id ? ticket : x)));
+    }
+  };
+
+  const statusStyles: Record<Ticket["status"], string> = {
+    Resolved: "bg-teal-50 text-brand-teal",
+    "In Progress": "bg-amber-50 text-amber-700",
+    Open: "bg-slate-100 text-slate-600",
+  };
 
   return (
     <div>
@@ -62,23 +92,52 @@ export default function Maintenance() {
       </div>
 
       <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6">
-        <h2 className="mb-4 font-semibold text-brand-ink">Support Tickets</h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-semibold text-brand-ink">Support Tickets</h2>
+          <TrustBadge kind="maintenance" label="Live — click a status to update it" />
+        </div>
+
+        <div className="mb-4 flex gap-2">
+          <input
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && addTicket()}
+            placeholder="Describe an issue…"
+            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-indigo focus:outline-none"
+          />
+          <button
+            onClick={addTicket}
+            disabled={creating}
+            className="flex items-center gap-1 rounded-lg bg-brand-indigo px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+          >
+            <Plus size={14} />
+            {creating ? "Adding…" : "Open ticket"}
+          </button>
+        </div>
+
+        {ticketsError && (
+          <p className="text-sm text-slate-500">
+            Backend not reachable — tickets are created and updated server-side, not
+            stored locally.
+          </p>
+        )}
+
         <div className="space-y-3">
           {tickets.map((t) => (
             <div key={t.id} className="flex items-center justify-between border-b border-slate-100 pb-3 last:border-0">
               <div>
                 <p className="text-sm font-medium text-slate-700">{t.title}</p>
-                <p className="text-xs text-slate-400">{t.id} · {t.time} ago</p>
+                <p className="text-xs text-slate-400">
+                  {t.id} · updated {new Date(t.updatedAt).toLocaleString()}
+                </p>
               </div>
-              <span
-                className={`rounded-full px-2.5 py-1 text-xs font-medium ${
-                  t.status === "Resolved"
-                    ? "bg-teal-50 text-brand-teal"
-                    : "bg-amber-50 text-amber-700"
-                }`}
+              <button
+                onClick={() => cycleStatus(t)}
+                className={`rounded-full px-2.5 py-1 text-xs font-medium ${statusStyles[t.status]}`}
+                title="Click to advance status"
               >
                 {t.status}
-              </span>
+              </button>
             </div>
           ))}
         </div>

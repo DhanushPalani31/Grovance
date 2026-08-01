@@ -7,6 +7,7 @@ import { automationRouter } from "./routes/automation";
 import { aiRouter } from "./routes/ai";
 import { leadsRouter } from "./routes/leads";
 import { changelogRouter } from "./routes/changelog";
+import { ticketsRouter } from "./routes/tickets";
 import { store } from "./lib/store";
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use("/api/automation", automationRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/leads", leadsRouter);
 app.use("/api/changelog", changelogRouter);
+app.use("/api/tickets", ticketsRouter);
 
 // --- Automation Center: real scheduled jobs, not a mockup ---
 // Runs every day at 9pm to demonstrate the "daily sales summary" rule
