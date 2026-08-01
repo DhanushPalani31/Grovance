@@ -40,6 +40,16 @@ const activityLog: ActivityItem[] = [
   },
 ];
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+  createdAt: string;
+}
+
+const users: User[] = [];
+
 export interface Rule {
   id: string;
   trigger: string;
@@ -98,7 +108,29 @@ export interface Lead {
 
 const leads: Lead[] = [];
 
+let metrics = {
+  ordersToday: 41,
+  revenueToday: 2180,
+  lowStockItems: 3,
+};
+
 export const store = {
+  simulateOrder() {
+    const orderValue = 15 + Math.round(Math.random() * 60);
+    metrics.ordersToday += 1;
+    metrics.revenueToday += orderValue;
+    return orderValue;
+  },
+  getDashboardStats() {
+    return {
+      ordersToday: metrics.ordersToday,
+      revenueToday: metrics.revenueToday,
+      lowStockItems: metrics.lowStockItems,
+      newCustomersToday: leads.length, // real: derived from actual contact-form leads
+      activeAutomationRules: rules.filter((r) => r.enabled).length,
+      openTickets: tickets.filter((t) => t.status !== "Resolved").length,
+    };
+  },
   listActivity(): ActivityItem[] {
     return [...activityLog].sort(
       (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
@@ -156,6 +188,17 @@ export const store = {
     ticket.status = status;
     ticket.updatedAt = new Date().toISOString();
     return ticket;
+  },
+  findUserByEmail(email: string): User | undefined {
+    return users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+  },
+  findUserById(id: string): User | undefined {
+    return users.find((u) => u.id === id);
+  },
+  createUser(user: Omit<User, "id" | "createdAt">): User {
+    const entry: User = { ...user, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+    users.push(entry);
+    return entry;
   },
 };
 

@@ -7,6 +7,10 @@ automationRouter.get("/activity", (_req, res) => {
   res.json(store.listActivity());
 });
 
+automationRouter.get("/stats", (_req, res) => {
+  res.json(store.getDashboardStats());
+});
+
 automationRouter.get("/rules", (_req, res) => {
   res.json(store.listRules());
 });

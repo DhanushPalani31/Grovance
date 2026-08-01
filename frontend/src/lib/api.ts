@@ -1,12 +1,28 @@
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const TOKEN_KEY = "grovance_token";
+
+export function getToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+export function setToken(token: string) {
+  localStorage.setItem(TOKEN_KEY, token);
+}
+export function clearToken() {
+  localStorage.removeItem(TOKEN_KEY);
+}
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const token = getToken();
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     ...options,
   });
   if (!res.ok) {
-    throw new Error(`API error ${res.status}: ${res.statusText}`);
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.error || `API error ${res.status}: ${res.statusText}`);
   }
   return res.json() as Promise<T>;
 }
@@ -57,12 +73,28 @@ export interface Ticket {
   updatedAt: string;
 }
 
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface DashboardStats {
+  ordersToday: number;
+  revenueToday: number;
+  lowStockItems: number;
+  newCustomersToday: number;
+  activeAutomationRules: number;
+  openTickets: number;
+}
+
 export const api = {
   getHealth: () => request<HealthStatus>("/api/health"),
   getActivity: () => request<ActivityItem[]>("/api/automation/activity"),
   getRules: () => request<Rule[]>("/api/automation/rules"),
   toggleRule: (id: string) =>
     request<Rule>(`/api/automation/rules/${id}/toggle`, { method: "POST" }),
+  getStats: () => request<DashboardStats>("/api/automation/stats"),
   getChangelog: () => request<ChangelogEntry[]>("/api/changelog"),
   getTickets: () => request<Ticket[]>("/api/tickets"),
   createTicket: (title: string) =>
@@ -72,6 +104,17 @@ export const api = {
       method: "PATCH",
       body: JSON.stringify({ status }),
     }),
+  register: (name: string, email: string, password: string) =>
+    request<{ token: string; user: AuthUser }>("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ name, email, password }),
+    }),
+  login: (email: string, password: string) =>
+    request<{ token: string; user: AuthUser }>("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    }),
+  me: () => request<AuthUser>("/api/auth/me"),
   sendChatMessage: (message: string, persona: "shop" | "marketing" = "shop") =>
     request<AIChatResponse>("/api/ai/chat", {
       method: "POST",

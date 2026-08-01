@@ -85,5 +85,25 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
   ticketing system (`GET/POST /api/tickets`, `PATCH /api/tickets/:id/status`) —
   tickets can be opened and their status advanced live, with every action logged
   to the shared activity feed.
+- **Phase 7 (real dashboard data):** complete — Dashboard stats come from a live
+  `/api/automation/stats` endpoint, auto-refreshing every minute, with a cron job
+  simulating new orders every ~10 minutes so the numbers genuinely move.
+- **Auth:** complete — JWT-based register/login/me (`/api/auth/*`), bcrypt password
+  hashing, `/portal/*` routes gated behind a real login (`RequireAuth` guard on the
+  frontend).
+- **Missing pages filled in:** Login, Signup, 404, Terms, Privacy, About, and a
+  Settings page (profile + logout) inside the portal.
+- **Polish:** framer-motion animations across the marketing site and auth pages
+  (fade/slide-ins, scroll-triggered reveals, hover lift), a testimonials section,
+  and a shared footer with legal/about links.
+- **New logo:** replaced with a cleaner, more enterprise/corporate mark (navy icon +
+  bold wordmark) — closer to the Zoho/Oracle end of the spectrum than the earlier
+  gradient badge.
+
+**Known placeholder content to swap before a real launch:**
+- Landing page testimonials are clearly-labeled illustrative quotes, not real
+  customers (see comment in `Testimonials.tsx`)
+- Terms/Privacy pages are structural placeholders, not reviewed legal text
+- `JWT_SECRET` in `.env.example` must be replaced with a real secret in production
 
 See `PROJECT-PLAN.md` for what's next.

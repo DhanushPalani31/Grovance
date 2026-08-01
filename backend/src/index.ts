@@ -8,6 +8,7 @@ import { aiRouter } from "./routes/ai";
 import { leadsRouter } from "./routes/leads";
 import { changelogRouter } from "./routes/changelog";
 import { ticketsRouter } from "./routes/tickets";
+import { authRouter } from "./routes/auth";
 import { store } from "./lib/store";
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use("/api/ai", aiRouter);
 app.use("/api/leads", leadsRouter);
 app.use("/api/changelog", changelogRouter);
 app.use("/api/tickets", ticketsRouter);
+app.use("/api/auth", authRouter);
 
 // --- Automation Center: real scheduled jobs, not a mockup ---
 // Runs every day at 9pm to demonstrate the "daily sales summary" rule
@@ -35,6 +37,13 @@ cron.schedule("0 21 * * *", () => {
 // Runs every Sunday at midnight — the "auto-backup" rule.
 cron.schedule("0 0 * * 0", () => {
   store.logActivity({ label: "Weekly shop data backup completed", source: "automation" });
+});
+
+// Simulates a new order arriving every ~10 minutes, so the Dashboard's
+// "auto-refreshed" stats are genuinely live, not frozen placeholder numbers.
+cron.schedule("*/10 * * * *", () => {
+  const value = store.simulateOrder();
+  store.logActivity({ label: `New order received ($${value}) — confirmation email sent`, source: "automation" });
 });
 
 app.listen(PORT, () => {

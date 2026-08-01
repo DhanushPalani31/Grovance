@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Zap, Bot, ShieldCheck } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
+import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
 
 const services = [
@@ -60,6 +61,7 @@ export default function Services() {
           </div>
         ))}
       </section>
+      <Footer />
       <ChatWidget />
     </div>
   );

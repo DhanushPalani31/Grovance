@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
+import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
 import { api } from "../../lib/api";
 
@@ -84,6 +85,7 @@ export default function Contact() {
           </form>
         )}
       </section>
+      <Footer />
       <ChatWidget />
     </div>
   );

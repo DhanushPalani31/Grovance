@@ -6,6 +6,7 @@ import {
   PenSquare,
   LineChart,
   ShieldCheck,
+  Settings as SettingsIcon,
   ArrowLeft,
 } from "lucide-react";
 
@@ -16,6 +17,7 @@ const links = [
   { to: "/portal/content-studio", label: "Content Studio", icon: PenSquare },
   { to: "/portal/insights", label: "Insights", icon: LineChart },
   { to: "/portal/maintenance", label: "Maintenance", icon: ShieldCheck },
+  { to: "/portal/settings", label: "Settings", icon: SettingsIcon },
 ];
 
 export default function Sidebar() {

@@ -1,24 +1,32 @@
 import { useEffect, useState } from "react";
-import { api, type ActivityItem } from "../lib/api";
+import { motion } from "framer-motion";
+import { api, type ActivityItem, type DashboardStats } from "../lib/api";
 import TrustBadge from "../components/TrustBadge";
-
-const stats = [
-  { label: "Today's Orders", value: "48", change: "+12%" },
-  { label: "Revenue", value: "$2,340", change: "+8%" },
-  { label: "Low Stock Items", value: "3", change: "-2" },
-  { label: "New Customers", value: "6", change: "+3" },
-];
 
 export default function Dashboard() {
   const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [error, setError] = useState(false);
 
+  const load = () => {
+    api.getActivity().then(setActivity).catch(() => setError(true));
+    api.getStats().then(setStats).catch(() => setError(true));
+  };
+
   useEffect(() => {
-    api
-      .getActivity()
-      .then(setActivity)
-      .catch(() => setError(true));
+    load();
+    const interval = setInterval(load, 60_000); // refresh every minute — genuinely live
+    return () => clearInterval(interval);
   }, []);
+
+  const statCards = stats
+    ? [
+        { label: "Today's Orders", value: stats.ordersToday.toString() },
+        { label: "Revenue", value: `$${stats.revenueToday.toLocaleString()}` },
+        { label: "Low Stock Items", value: stats.lowStockItems.toString() },
+        { label: "New Leads", value: stats.newCustomersToday.toString() },
+      ]
+    : [];
 
   return (
     <div>
@@ -29,17 +37,25 @@ export default function Dashboard() {
             Demo workspace for "The Corner Store"
           </p>
         </div>
-        <TrustBadge kind="automation" label="Auto-refreshed every 5 min" />
+        <TrustBadge kind="automation" label="Auto-refreshed every minute" />
       </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="rounded-xl border border-slate-200 bg-white p-5">
+        {statCards.map((s, i) => (
+          <motion.div
+            key={s.label}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: i * 0.05 }}
+            className="rounded-xl border border-slate-200 bg-white p-5"
+          >
             <p className="text-xs font-medium text-slate-500">{s.label}</p>
             <p className="mt-2 text-2xl font-bold text-brand-ink">{s.value}</p>
-            <p className="mt-1 text-xs font-medium text-brand-teal">{s.change} this week</p>
-          </div>
+          </motion.div>
         ))}
+        {!stats && !error && (
+          <p className="col-span-4 text-sm text-slate-400">Loading live stats…</p>
+        )}
       </div>
 
       <div className="mt-8 rounded-xl border border-slate-200 bg-white p-6">

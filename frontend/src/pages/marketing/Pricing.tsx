@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Check } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
+import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
 
 const tiers = [
@@ -83,6 +84,7 @@ export default function Pricing() {
           ))}
         </div>
       </section>
+      <Footer />
       <ChatWidget />
     </div>
   );
