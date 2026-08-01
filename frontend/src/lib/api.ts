@@ -41,12 +41,21 @@ export interface InsightsResponse {
   generatedAt: string;
 }
 
+export interface ChangelogEntry {
+  sha: string;
+  message: string;
+  author: string;
+  date: string;
+  url: string;
+}
+
 export const api = {
   getHealth: () => request<HealthStatus>("/api/health"),
   getActivity: () => request<ActivityItem[]>("/api/automation/activity"),
   getRules: () => request<Rule[]>("/api/automation/rules"),
   toggleRule: (id: string) =>
     request<Rule>(`/api/automation/rules/${id}/toggle`, { method: "POST" }),
+  getChangelog: () => request<ChangelogEntry[]>("/api/changelog"),
   sendChatMessage: (message: string, persona: "shop" | "marketing" = "shop") =>
     request<AIChatResponse>("/api/ai/chat", {
       method: "POST",

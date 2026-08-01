@@ -52,7 +52,9 @@ npm run dev                 # runs on http://localhost:5173
 Without an `ANTHROPIC_API_KEY` set, the AI Assistant and Content Studio pages
 will still render — they just show a friendly "not connected yet" message
 instead of a live reply. Automation and Maintenance pages work with no
-external keys needed.
+external keys needed, though the Maintenance page's changelog will hit
+GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
+`backend/.env.example`.
 
 ## Tech stack
 
@@ -77,5 +79,11 @@ external keys needed.
 - **Phase 5 (AI insights):** complete — the Insights page calls a real
   `/api/ai/insights` endpoint that feeds Claude the shop's actual activity log and
   rule/lead stats, generating a genuine on-demand summary instead of static copy.
+
+- **Phase 6 (maintenance/trust layer):** mostly complete — `/api/health` status,
+  the Maintenance page UI, and a **real changelog widget pulling live commit history
+  from the GitHub API** (`/api/changelog`, cached 5 min, gracefully degrades on
+  rate-limit or network failure). Support tickets are still placeholder data —
+  a real ticketing backend is the one piece left here.
 
 See `PROJECT-PLAN.md` for what's next.

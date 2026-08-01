@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api, type HealthStatus } from "../lib/api";
+import { api, type HealthStatus, type ChangelogEntry } from "../lib/api";
 import TrustBadge from "../components/TrustBadge";
 
 const tickets = [
@@ -11,12 +11,18 @@ const tickets = [
 export default function Maintenance() {
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [error, setError] = useState(false);
+  const [changelog, setChangelog] = useState<ChangelogEntry[]>([]);
+  const [changelogError, setChangelogError] = useState(false);
 
   useEffect(() => {
     api
       .getHealth()
       .then(setHealth)
       .catch(() => setError(true));
+    api
+      .getChangelog()
+      .then(setChangelog)
+      .catch(() => setChangelogError(true));
   }, []);
 
   return (
@@ -76,6 +82,47 @@ export default function Maintenance() {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-semibold text-brand-ink">Changelog</h2>
+          <TrustBadge kind="maintenance" label="Pulled live from GitHub" />
+        </div>
+
+        {changelogError && (
+          <p className="text-sm text-slate-500">
+            Couldn't reach GitHub right now — this pulls real commit history from the
+            Grovance repo, not a hand-written list.
+          </p>
+        )}
+
+        {!changelogError && changelog.length === 0 && (
+          <p className="text-sm text-slate-400">Loading recent updates…</p>
+        )}
+
+        <ul className="space-y-3">
+          {changelog.map((c) => (
+            <li key={c.sha} className="flex items-start justify-between gap-4 border-b border-slate-100 pb-3 last:border-0">
+              <div>
+                <a
+                  href={c.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-slate-700 hover:text-brand-indigo hover:underline"
+                >
+                  {c.message}
+                </a>
+                <p className="mt-0.5 text-xs text-slate-400">
+                  {c.author} · {c.sha}
+                </p>
+              </div>
+              <span className="shrink-0 text-xs text-slate-400">
+                {new Date(c.date).toLocaleDateString()}
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
