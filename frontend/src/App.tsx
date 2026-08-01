@@ -14,6 +14,7 @@ import Services from "./pages/marketing/Services";
 import Pricing from "./pages/marketing/Pricing";
 import Contact from "./pages/marketing/Contact";
 import About from "./pages/marketing/About";
+import Careers from "./pages/marketing/Careers";
 import Terms from "./pages/marketing/Terms";
 import Privacy from "./pages/marketing/Privacy";
 import Login from "./pages/auth/Login";
@@ -28,6 +29,7 @@ export default function App() {
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/about" element={<About />} />
+      <Route path="/careers" element={<Careers />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/privacy" element={<Privacy />} />
 

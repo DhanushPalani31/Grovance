@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../../lib/AuthContext";
+import GoogleAuthButton from "../../components/GoogleAuthButton";
 
 export default function Login() {
   const { login } = useAuth();
@@ -39,7 +40,17 @@ export default function Login() {
         <h1 className="text-center text-xl font-semibold text-ink">Welcome back</h1>
         <p className="mt-1 text-center text-sm text-slate-500">Sign in to your workspace</p>
 
-        <form onSubmit={submit} className="mt-6 space-y-4">
+        <div className="mt-6">
+          <GoogleAuthButton onSuccess={() => navigate("/portal")} />
+        </div>
+
+        <div className="my-6 flex items-center gap-3">
+          <div className="h-px flex-1 bg-slate-200" />
+          <span className="text-xs text-slate-400">or continue with email</span>
+          <div className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        <form onSubmit={submit} className="space-y-4">
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
             <input

@@ -8,6 +8,11 @@ import Testimonials from "../../components/marketing/Testimonials";
 
 const pillars = [
   {
+    icon: Code2,
+    title: "Custom app development",
+    copy: "Need something beyond the standard modules? We design and build bespoke applications around your exact requirements — with Claude integrated wherever it genuinely helps.",
+  },
+  {
     icon: Zap,
     title: "Automation",
     copy: "Order confirmations, low-stock alerts, daily summaries — rules that run themselves, tailored to how your brand actually works.",
@@ -21,11 +26,6 @@ const pillars = [
     icon: ShieldCheck,
     title: "End-to-end maintenance",
     copy: "We built it, we watch it, we fix it. Live uptime, support tickets, and a changelog you can see for yourself.",
-  },
-  {
-    icon: Code2,
-    title: "Custom app development",
-    copy: "Need something beyond the standard modules? We design and build bespoke applications around your exact requirements — with Claude integrated wherever it genuinely helps.",
   },
 ];
 

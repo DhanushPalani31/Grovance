@@ -121,6 +121,11 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ email, password }),
     }),
+  loginWithGoogle: (credential: string) =>
+    request<{ token: string; user: AuthUser }>("/api/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ credential }),
+    }),
   me: () => request<AuthUser>("/api/auth/me"),
   sendChatMessage: (message: string, persona: "brand" | "marketing" = "brand") =>
     request<AIChatResponse>("/api/ai/chat", {

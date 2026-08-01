@@ -44,7 +44,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  passwordHash: string;
+  passwordHash: string | null;
+  googleId: string | null;
   createdAt: string;
 }
 
@@ -211,10 +212,25 @@ export const store = {
   findUserById(id: string): User | undefined {
     return users.find((u) => u.id === id);
   },
-  createUser(user: Omit<User, "id" | "createdAt">): User {
-    const entry: User = { ...user, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+  createUser(user: Omit<User, "id" | "createdAt" | "googleId"> & { googleId?: string | null }): User {
+    const entry: User = {
+      ...user,
+      googleId: user.googleId ?? null,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+    };
     users.push(entry);
     return entry;
+  },
+  findOrCreateGoogleUser(googleId: string, email: string, name: string): { user: User; created: boolean } {
+    let user = users.find((u) => u.googleId === googleId) || users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+    if (user) {
+      if (!user.googleId) user.googleId = googleId;
+      return { user, created: false };
+    }
+    user = { id: crypto.randomUUID(), name, email, passwordHash: null, googleId, createdAt: new Date().toISOString() };
+    users.push(user);
+    return { user, created: true };
   },
 };
 

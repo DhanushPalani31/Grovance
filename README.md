@@ -122,4 +122,23 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
   Services pages — bespoke builds around client requirements, with Claude
   integrated only where it adds real value
 
+**Google Sign-In, header/footer, and content additions:**
+- Google OAuth login added (`POST /api/auth/google`, verified server-side with
+  `google-auth-library`) alongside existing email/password auth. Needs a real
+  Google OAuth Client ID — see `GOOGLE_CLIENT_ID` / `VITE_GOOGLE_CLIENT_ID` in
+  the `.env.example` files. The button renders (disabled, with an explanatory
+  tooltip) if not configured, rather than breaking the page.
+- Navbar rebuilt: added Home/Careers links, scroll-aware shadow, cleaner spacing
+- Footer rebuilt as a proper multi-column professional footer (Company/Product/
+  Legal columns, contact info)
+- Services page reordered — **Custom App Development listed first**, followed
+  by Automation, AI, Maintenance
+- Added a named list of automation "tools" (Auto-Reply, Order Taken, Abandoned
+  Cart Recovery, Low-Stock Alerts, Review Requests, Daily/Weekly Summaries) to
+  the Services page, making automation concrete rather than a vague promise
+- Added an "Our Work" section on Services listing the one completed project so
+  far: Naya Builders (nayabuilders.com), a construction company in Chennai
+- New Careers page (openings are clearly-flagged illustrative placeholders,
+  same pattern as the testimonials — replace before real hiring use)
+
 See `PROJECT-PLAN.md` for what's next.
