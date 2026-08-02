@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, MapPin } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 const columns = [
   {
@@ -47,6 +47,10 @@ export default function Footer() {
                 <Mail size={14} />
                 grovanceco@gmail.com
               </div>
+              <a href="tel:+916383204439" className="flex items-center gap-2 transition-colors hover:text-white">
+                <Phone size={14} />
+                +91 63832 04439
+              </a>
             </div>
           </div>
 
