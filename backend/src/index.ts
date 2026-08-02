@@ -1,16 +1,10 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import cron from "node-cron";
 import { healthRouter } from "./routes/health";
-import { automationRouter } from "./routes/automation";
 import { aiRouter } from "./routes/ai";
 import { leadsRouter } from "./routes/leads";
-import { changelogRouter } from "./routes/changelog";
-import { ticketsRouter } from "./routes/tickets";
-import { authRouter } from "./routes/auth";
 import { auditRouter } from "./routes/audit";
-import { store } from "./lib/store";
 
 dotenv.config();
 
@@ -21,44 +15,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/health", healthRouter);
-app.use("/api/automation", automationRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/leads", leadsRouter);
-app.use("/api/changelog", changelogRouter);
-app.use("/api/tickets", ticketsRouter);
-app.use("/api/auth", authRouter);
 app.use("/api/audit", auditRouter);
-
-// --- Automation Center: real scheduled jobs, not a mockup ---
-// Runs every day at 9pm to demonstrate the "daily sales summary" rule
-// shown as enabled in the frontend's Automation Center page.
-cron.schedule("0 21 * * *", async () => {
-  try {
-    await store.logActivity({ label: "Daily sales summary generated", source: "automation" });
-  } catch (err) {
-    console.error("Cron job (daily summary) failed:", err);
-  }
-});
-
-// Runs every Sunday at midnight — the "auto-backup" rule.
-cron.schedule("0 0 * * 0", async () => {
-  try {
-    await store.logActivity({ label: "Weekly brand data backup completed", source: "automation" });
-  } catch (err) {
-    console.error("Cron job (weekly backup) failed:", err);
-  }
-});
-
-// Simulates a new order arriving every ~10 minutes, so the Dashboard's
-// "auto-refreshed" stats are genuinely live, not frozen placeholder numbers.
-cron.schedule("*/10 * * * *", async () => {
-  try {
-    const value = await store.simulateOrder();
-    await store.logActivity({ label: `New order received ($${value}) — confirmation email sent`, source: "automation" });
-  } catch (err) {
-    console.error("Cron job (simulate order) failed:", err);
-  }
-});
 
 app.listen(PORT, () => {
   console.log(`Grovance API listening on http://localhost:${PORT}`);

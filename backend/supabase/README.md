@@ -7,20 +7,22 @@
 4. Set `SUPABASE_URL` and `SUPABASE_SECRET_KEY` in `backend/.env` (found in
    your Supabase project's Settings → API)
 
-That's it — `schema.sql` creates every table (`users`, `rules`, `tickets`,
-`leads`, `activity_log`, plus two small helper tables/functions) and seeds
-the same demo data the app has always shipped with.
+`schema.sql` creates just two tables now: `leads` (from the Contact form
+and Automation Audit) and `activity_log` (an internal log the AI/lead
+routes write to). The portal-era tables (`users`, `rules`, `tickets`, etc.)
+were removed along with the client dashboard feature.
+
+## If you already ran the old (larger) schema
+If your Supabase project has the older `users`/`rules`/`tickets`/`metrics`
+tables from before the portal was removed, run
+`cleanup-legacy-portal-tables.sql` once to clean those up — it only
+touches the now-unused tables and leaves `leads`/`activity_log` alone.
 
 ## If something's in a broken/partial state
-If you ran part of `schema.sql` before, hit an error partway through, or
-just want a clean slate:
-
-1. Run `reset.sql` first — **this deletes everything**, only use it if
-   you're okay losing all current data (test accounts, tickets, etc.)
-2. Then run `schema.sql` fresh, exactly as in first-time setup above
+1. Run `reset.sql` — **this deletes all data in `leads`/`activity_log`**,
+   only use it if you're okay losing that
+2. Then run `schema.sql` fresh
 
 ## Verifying it worked
-In Supabase's Table Editor, you should see 7 tables: `users`, `rules`,
-`tickets`, `leads`, `activity_log`, `ticket_counter`, `metrics` — with
-`rules` and `tickets` already containing the 5 demo rules and 3 demo
-tickets seeded in.
+In Supabase's Table Editor, you should see 2 tables: `leads` and
+`activity_log`.

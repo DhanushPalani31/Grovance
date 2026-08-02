@@ -36,24 +36,24 @@ const services = [
     title: "Automation",
     description:
       "We map your brand's repetitive work into simple if-this-then-that rules you can see and toggle yourself.",
-    demoLabel: "See it live in the Automation Center →",
-    demoLink: "/portal/automation",
+    demoLabel: "See what automation fits your brand →",
+    demoLink: "/audit",
   },
   {
     icon: Bot,
     title: "AI, scoped to your requirements",
     description:
       "A customer-facing assistant trained on your brand's own information, a content studio for product descriptions and captions, and weekly insights written in plain language.",
-    demoLabel: "Chat with the AI Assistant →",
-    demoLink: "/portal/ai-assistant",
+    demoLabel: "Chat with our AI assistant →",
+    demoLink: "/audit",
   },
   {
     icon: ShieldCheck,
     title: "End-to-end maintenance",
     description:
       "We don't disappear after launch. Live uptime, a real support ticket queue, and a changelog of what we shipped for you — all visible, all the time.",
-    demoLabel: "View the Maintenance page →",
-    demoLink: "/portal/maintenance",
+    demoLabel: "Talk to us about ongoing support →",
+    demoLink: "/contact",
   },
 ];
 
@@ -107,7 +107,7 @@ export default function Services() {
       <DarkHeader
         eyebrow="What we build"
         title="Services"
-        subtitle="Four services, working together — and every one is running live in the demo portal, not just described here."
+        subtitle="Four services, working together — try the free Automation Audit below to see it in action."
       />
 
       <section className="mx-auto max-w-4xl space-y-6 px-6 pt-14 pb-16">

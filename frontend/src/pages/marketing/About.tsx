@@ -25,9 +25,10 @@ export default function About() {
             maintain it.
           </p>
           <p className="mt-4 text-slate-600 leading-relaxed">
-            Everything in our demo portal is a real, working example of that philosophy —
-            the automation rules, the AI assistant, the maintenance dashboard. We don't
-            ask you to imagine what it would look like; we show you.
+            The chat assistant on this site and the free Automation Audit are real,
+            working examples of that philosophy. We don't ask you to imagine what
+            automation and AI could do for your brand; we show you, live, before you've
+            even talked to us.
           </p>
         </div>
 

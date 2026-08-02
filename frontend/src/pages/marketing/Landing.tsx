@@ -8,8 +8,7 @@ import ChatWidget from "../../components/marketing/ChatWidget";
 import Projects from "../../components/marketing/Projects";
 import ScrollProgressBar from "../../components/marketing/ScrollProgressBar";
 import HeroBackground from "../../components/marketing/HeroBackground";
-import FloatingStatCard from "../../components/marketing/FloatingStatCard";
-import { api, type DashboardStats, type HealthStatus } from "../../lib/api";
+import { api, type HealthStatus } from "../../lib/api";
 
 const pillars = [
   {
@@ -35,11 +34,9 @@ const pillars = [
 ];
 
 export default function Landing() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [health, setHealth] = useState<HealthStatus | null>(null);
 
   useEffect(() => {
-    api.getStats().then(setStats).catch(() => setStats(null));
     api.getHealth().then(setHealth).catch(() => setHealth(null));
   }, []);
 
@@ -81,8 +78,8 @@ export default function Landing() {
             className="mx-auto mt-5 max-w-2xl text-lg text-slate-300"
           >
             Grovance builds it around what your business actually needs — and this whole
-            site is proof, not a promise. Chat with the assistant in the corner, or step
-            into the live client portal below.
+            site is proof, not a promise. Chat with the assistant in the corner, or try
+            the free Automation Audit below.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -105,25 +102,6 @@ export default function Landing() {
           </motion.div>
         </div>
 
-        {/* Floating proof cards — real numbers from the live backend, not decoration */}
-        {stats && (
-          <>
-            <FloatingStatCard
-              icon={Zap}
-              label="Automation events today"
-              value={stats.automationEventsToday}
-              className="left-[8%] top-[58%]"
-              delay={0.5}
-            />
-            <FloatingStatCard
-              icon={Bot}
-              label="Active automation rules"
-              value={stats.activeAutomationRules}
-              className="right-[10%] top-[30%]"
-              delay={0.65}
-            />
-          </>
-        )}
         {health && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.9 }}

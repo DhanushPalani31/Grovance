@@ -1,47 +1,47 @@
 # Grovance
 
-Automation, AI, and end-to-end maintenance for local shops and brands —
-demonstrated by an app that runs on its own services.
-
-Every feature you see in this app (automation rules, the AI assistant, the
-maintenance/status page) is a real Grovance service running live, not a
-mockup. That's intentional — this app *is* the pitch.
+Automation, AI, and end-to-end maintenance for brands and growing
+businesses — demonstrated by a marketing site that proves it live instead
+of just describing it.
 
 ![Grovance](./logo.svg)
 
-## Architecture
+## What this app actually is today
 
-A fully decoupled two-service architecture:
+**Update:** the client portal/dashboard (Automation Center, AI Assistant
+page, Content Studio, Insights, Maintenance, login/signup) was built,
+fully working, then **deliberately removed**. It was a strong demo, but it
+implied one fixed product every client gets, which isn't how Grovance
+actually works — each engagement is custom. What's live now is leaner and
+puts the proof where a real visitor actually is: the marketing site itself.
 
 ```
 grovance/
-├── frontend/   React + Vite + TypeScript + Tailwind
-│   ├── /            Public marketing site (Landing, Services, Pricing, Contact)
-│   └── /portal/*    Client portal — the live demo (Dashboard, Automation Center,
-│                     AI Assistant, Content Studio, Insights, Maintenance)
-├── backend/    Node.js + Express + TypeScript — API, automation jobs, AI routes, leads
-└── PROJECT-PLAN.md   Full build plan, phases, and roadmap
+├── frontend/   React + Vite + TypeScript + Tailwind — marketing site only
+│                (Landing, Services, Pricing, About, Careers, Contact,
+│                 Terms, Privacy, and the Free Automation Audit tool)
+├── backend/    Node.js + Express + TypeScript — AI chat, leads, the
+│                Audit tool's generation endpoint, and a health check
+└── PROJECT-PLAN.md   Original build plan (historical — portal phases
+                       described there were later removed, see below)
 ```
 
-The marketing site isn't just a brochure — it embeds a live chat widget backed by the
-same Claude endpoint the portal uses, and the contact form writes straight into the
-automation activity log, same as any other workflow rule.
-
-See `PROJECT-PLAN.md` for the full plan, feature breakdown, and phased roadmap.
+The site isn't just a brochure: a live chat widget (Gemini-powered) sits
+on every page, the Contact form and Automation Audit both write real leads
+into Supabase, and the Audit tool generates a genuine, on-demand analysis
+of a visitor's own business — no login required for any of it.
 
 ## Running locally
 
 ### Backend
-
 ```bash
 cd backend
-cp .env.example .env      # add your ANTHROPIC_API_KEY to enable AI features
+cp .env.example .env      # add GEMINI_API_KEY + Supabase credentials
 npm install
 npm run dev                # runs on http://localhost:4000
 ```
 
 ### Frontend
-
 ```bash
 cd frontend
 cp .env.example .env       # points to the backend URL
@@ -49,19 +49,15 @@ npm install
 npm run dev                 # runs on http://localhost:5173
 ```
 
-Without an `ANTHROPIC_API_KEY` set, the AI Assistant and Content Studio pages
-will still render — they just show a friendly "not connected yet" message
-instead of a live reply. Automation and Maintenance pages work with no
-external keys needed, though the Maintenance page's changelog will hit
-GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
-`backend/.env.example`.
+Without `GEMINI_API_KEY` set, the chat widget and Audit tool still render —
+they just show a clear "not connected" message instead of crashing.
 
 ## Tech stack
 
 - **Frontend:** React 18, Vite, TypeScript, Tailwind CSS v4, React Router
-- **Backend:** Node.js, Express, TypeScript, node-cron, `@anthropic-ai/sdk`
-- **Data layer:** in-memory store today, designed to be swapped for
-  PostgreSQL without touching route code (see `backend/src/lib/store.ts`)
+- **Backend:** Node.js, Express, TypeScript, `@google/generative-ai` (Gemini)
+- **Data layer:** Supabase (Postgres) — just two tables now: `leads` and
+  `activity_log` (see `backend/supabase/`)
 
 ## Deployment (suggested)
 
@@ -71,42 +67,32 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
 
 ## Status
 
-- **Phase 1 (foundation):** complete
-- **Phase 2 (public marketing site):** complete
-- **Phase 4 (automation deepening):** complete — rule toggles now persist on the
-  backend (`GET/POST /api/automation/rules`) instead of local React state, and every
-  toggle logs to the same activity feed the dashboard reads from.
-- **Phase 5 (AI insights):** complete — the Insights page calls a real
-  `/api/ai/insights` endpoint that feeds Claude the shop's actual activity log and
-  rule/lead stats, generating a genuine on-demand summary instead of static copy.
-
-- **Phase 6 (maintenance/trust layer):** complete — `/api/health` status, a real
-  changelog widget pulling live commit history from the GitHub API, and a real
-  ticketing system (`GET/POST /api/tickets`, `PATCH /api/tickets/:id/status`) —
-  tickets can be opened and their status advanced live, with every action logged
-  to the shared activity feed.
-- **Phase 7 (real dashboard data):** complete — Dashboard stats come from a live
-  `/api/automation/stats` endpoint, auto-refreshing every minute, with a cron job
-  simulating new orders every ~10 minutes so the numbers genuinely move.
-- **Auth:** complete — JWT-based register/login/me (`/api/auth/*`), bcrypt password
-  hashing, `/portal/*` routes gated behind a real login (`RequireAuth` guard on the
-  frontend).
-- **Missing pages filled in:** Login, Signup, 404, Terms, Privacy, About, and a
-  Settings page (profile + logout) inside the portal.
-- **Polish:** framer-motion animations across the marketing site and auth pages
-  (fade/slide-ins, scroll-triggered reveals, hover lift), a testimonials section,
-  and a shared footer with legal/about links.
-- **New logo:** replaced with a cleaner, more enterprise/corporate mark (navy icon +
-  bold wordmark) — closer to the Zoho/Oracle end of the spectrum than the earlier
-  gradient badge.
+- **Marketing site:** complete — Landing, Services, Pricing, About,
+  Careers, Contact, Terms, Privacy, all with the premium dark-hero
+  redesign, mobile nav, and accessibility pass described below
+- **Free Automation Audit tool:** complete — the flagship live-proof piece;
+  a visitor describes their business and gets an instant, Gemini-generated
+  breakdown of relevant automation, no login needed
+- **AI chat widget:** complete — same Gemini backend as the Audit tool,
+  present on every page
+- **Portal/dashboard/auth:** removed entirely (see above)
 
 **Known placeholder content to swap before a real launch:**
-- Landing page testimonials are clearly-labeled illustrative quotes, not real
-  customers (see comment in `Testimonials.tsx`)
-- Terms/Privacy pages are full realistic drafts but still need attorney review
-  and jurisdiction-specific details filled in (flagged inline)
-- `JWT_SECRET` in `.env.example` must be replaced with a real secret in production
+- Landing page's "Our Work" project spotlight is the one completed real
+  project (Naya Builders) — accurate, not fabricated
+- Terms/Privacy pages are full realistic drafts but still need attorney
+  review and jurisdiction-specific details filled in (flagged inline)
+- Careers page openings are placeholders — currently says "no openings"
 
+---
+
+## Full build history
+
+The sections below are a running log of everything built, in order,
+including the portal/dashboard/auth system that was later removed. Kept
+for context on decisions made along the way.
+
+**Latest polish pass:**
 **Latest polish pass:**
 - All "shop"/"store" language replaced with "brand"/"business" throughout the
   app and AI system prompts; demo entity renamed to "Aurora & Co."
@@ -375,3 +361,52 @@ dedicated pass, as noted earlier in this log).
   aistudio.google.com/apikey).
 
 See `PROJECT-PLAN.md` for what's next.
+
+---
+
+## Portal/dashboard/auth removed entirely
+
+After discussion, decided the client portal (Dashboard, Automation Center,
+AI Assistant page, Content Studio, Insights, Maintenance, Settings) and the
+whole login/signup/auth system should be removed completely, not just
+unlinked from the nav as in the previous pass. Reasoning: a generic,
+one-size-fits-all demo dashboard risked implying every client gets the same
+fixed product, which contradicts Grovance's actual custom-build positioning.
+The Free Automation Audit tool already does the "prove it live" job better —
+no login needed, genuinely personalized per visitor, demoable in front of a
+prospect on the spot.
+
+**Frontend removed:** Login/Signup pages, Dashboard, Automation Center, AI
+Assistant page, Content Studio, Insights, Maintenance, Settings, Sidebar,
+Layout, RequireAuth, GuidedTour, CommandPalette, Avatar, GoogleAuthButton,
+AuthContext, ToastContext, and utility components only they used
+(ConfettiBurst, Skeleton, Sparkline, UptimeRing, PasswordStrength).
+`App.tsx`/`main.tsx` rewritten as a pure marketing-site router with no auth
+wrapping. Fixed every remaining page that referenced the portal (Landing's
+floating stat cards depended on the now-removed automation stats endpoint;
+Services' "see it live" links pointed to deleted portal routes; About and
+ChatWidget copy mentioned the portal directly) — all repointed to the Audit
+tool or removed. `api.ts` trimmed from 15 methods to 3 (health, chat, leads,
+audit). Removed unused `@react-oauth/google` dependency. Frontend bundle
+dropped from ~478KB to ~420KB as a direct result.
+
+**Backend removed:** `auth.ts`, `automation.ts`, `tickets.ts`,
+`changelog.ts`, `lib/auth.ts` deleted entirely. `ai.ts` trimmed to just the
+`/chat` endpoint (used by the marketing ChatWidget) — `/generate` and
+`/insights` deleted along with the pages that called them. `store.ts`
+trimmed from ~15 exported functions covering users/rules/tickets/stats down
+to 3: `logActivity`, `addLead`, `listLeads`. Removed now-unused dependencies
+(`bcryptjs`, `jsonwebtoken`, `google-auth-library`, `node-cron`).
+
+**Database schema trimmed too:** `schema.sql` now defines only two tables
+(`leads`, `activity_log`) instead of seven. Added
+`cleanup-legacy-portal-tables.sql` specifically to drop the old
+`users`/`rules`/`tickets`/`ticket_counter`/`metrics` tables and their
+Postgres functions from an **existing** Supabase project that was already
+set up with the larger schema — run once, doesn't touch `leads`/`activity_log`.
+
+**Verified:** full `tsc` + build pass on both frontend and backend (clean
+on the first pass despite the scale of the removal). Live smoke test with
+both servers running confirmed every remaining route returns 200, the
+backend health check responds correctly, and the audit endpoint's error
+handling still works as expected.

@@ -54,12 +54,6 @@ offers, how the demo portal works, and pricing in a friendly, concise, non-pushy
 Keep replies under 4 sentences. If asked something you can't answer, suggest they use
 the contact form.`;
 
-export const INSIGHTS_SYSTEM_PROMPT = `You are Grovance's Insights engine for a small
-brand called "Aurora & Co.". Given a raw activity log and some stats, write a
-short (3-5 sentence) plain-language weekly summary a busy business owner could read in 10
-seconds — highlight what's working, anything that needs attention, and one concrete
-suggestion. Warm, direct, no jargon.`;
-
 const AVAILABLE_TOOLS = `- Auto-Reply: instantly responds to common customer messages/inquiries
 - Order Taken: automatically confirms new orders and kicks off fulfillment
 - Abandoned Cart Recovery: nudges customers who added items but didn't check out

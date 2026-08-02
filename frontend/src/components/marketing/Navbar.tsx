@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { useAuth } from "../../lib/AuthContext";
 
 const links = [
   { to: "/", label: "Home", end: true },
@@ -14,7 +13,6 @@ const links = [
 ];
 
 export default function Navbar() {
-  const { user } = useAuth();
   const location = useLocation();
   const onAuditPage = location.pathname === "/audit";
   const [scrolled, setScrolled] = useState(false);
@@ -61,19 +59,6 @@ export default function Navbar() {
           ))}
         </nav>
         <div className="flex items-center gap-3">
-          {!user && (
-            <div className="hidden items-center gap-3 md:flex">
-              <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-brand">
-                Log in
-              </Link>
-              <Link
-                to="/signup"
-                className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
-              >
-                Sign up
-              </Link>
-            </div>
-          )}
           {!onAuditPage && (
             <Link
               to="/audit"
@@ -116,16 +101,6 @@ export default function Navbar() {
                   {l.label}
                 </NavLink>
               ))}
-              {!user && (
-                <>
-                  <Link to="/login" className="border-b border-slate-100 py-3 text-sm font-medium text-slate-600">
-                    Log in
-                  </Link>
-                  <Link to="/signup" className="border-b border-slate-100 py-3 text-sm font-medium text-slate-600">
-                    Sign up
-                  </Link>
-                </>
-              )}
               {!onAuditPage && (
                 <Link
                   to="/audit"

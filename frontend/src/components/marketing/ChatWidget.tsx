@@ -41,7 +41,7 @@ export default function ChatWidget() {
           {
             role: "assistant" as const,
             content:
-              "(Demo backend isn't reachable right now — this widget calls the same live Grovance AI service shown in the portal.)",
+              "(Demo backend isn't reachable right now — this widget calls the same live Grovance AI service used across the site.)",
           },
         ];
         setLastAssistantIndex(next.length - 1);
