@@ -4,7 +4,7 @@ import { store } from "../lib/store";
 
 export const auditRouter = Router();
 
-const MODEL = "claude-sonnet-4-6";
+const MODEL = "claude-sonnet-5";
 
 const VALID_TOOL_NAMES = [
   "Auto-Reply",
@@ -99,9 +99,9 @@ What they currently have/lack: ${
 
     // Log as a real lead if they left an email — same pipeline as the Contact form
     if (email) {
-      store.addLead({ name: businessName, email, message: `Automation Audit requested (${category})` });
+      await store.addLead({ name: businessName, email, message: `Automation Audit requested (${category})` });
     }
-    store.logActivity({
+    await store.logActivity({
       label: `Automation Audit generated for "${businessName}" (${category})`,
       source: "ai",
     });

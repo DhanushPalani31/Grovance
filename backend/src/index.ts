@@ -32,20 +32,32 @@ app.use("/api/audit", auditRouter);
 // --- Automation Center: real scheduled jobs, not a mockup ---
 // Runs every day at 9pm to demonstrate the "daily sales summary" rule
 // shown as enabled in the frontend's Automation Center page.
-cron.schedule("0 21 * * *", () => {
-  store.logActivity({ label: "Daily sales summary generated", source: "automation" });
+cron.schedule("0 21 * * *", async () => {
+  try {
+    await store.logActivity({ label: "Daily sales summary generated", source: "automation" });
+  } catch (err) {
+    console.error("Cron job (daily summary) failed:", err);
+  }
 });
 
 // Runs every Sunday at midnight — the "auto-backup" rule.
-cron.schedule("0 0 * * 0", () => {
-  store.logActivity({ label: "Weekly brand data backup completed", source: "automation" });
+cron.schedule("0 0 * * 0", async () => {
+  try {
+    await store.logActivity({ label: "Weekly brand data backup completed", source: "automation" });
+  } catch (err) {
+    console.error("Cron job (weekly backup) failed:", err);
+  }
 });
 
 // Simulates a new order arriving every ~10 minutes, so the Dashboard's
 // "auto-refreshed" stats are genuinely live, not frozen placeholder numbers.
-cron.schedule("*/10 * * * *", () => {
-  const value = store.simulateOrder();
-  store.logActivity({ label: `New order received ($${value}) — confirmation email sent`, source: "automation" });
+cron.schedule("*/10 * * * *", async () => {
+  try {
+    const value = await store.simulateOrder();
+    await store.logActivity({ label: `New order received ($${value}) — confirmation email sent`, source: "automation" });
+  } catch (err) {
+    console.error("Cron job (simulate order) failed:", err);
+  }
 });
 
 app.listen(PORT, () => {

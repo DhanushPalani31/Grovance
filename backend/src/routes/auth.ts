@@ -15,50 +15,65 @@ function getGoogleClient(): OAuth2Client | null {
 }
 
 authRouter.post("/register", async (req, res) => {
-  const { name, email, password } = req.body as { name?: string; email?: string; password?: string };
+  try {
+    const { name, email, password } = req.body as { name?: string; email?: string; password?: string };
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: "name, email, and password are required" });
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "name, email, and password are required" });
+    }
+    if (password.length < 8) {
+      return res.status(400).json({ error: "password must be at least 8 characters" });
+    }
+    if (await store.findUserByEmail(email)) {
+      return res.status(409).json({ error: "an account with this email already exists" });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await store.createUser({ name, email, passwordHash });
+
+    await store.logActivity({ label: `New account created: ${name}`, source: "system" });
+
+    const token = signToken({ sub: user.id, email: user.email, name: user.name });
+    res.status(201).json({ token, user: { id: user.id, name: user.name, email: user.email } });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not create account" });
   }
-  if (password.length < 8) {
-    return res.status(400).json({ error: "password must be at least 8 characters" });
-  }
-  if (store.findUserByEmail(email)) {
-    return res.status(409).json({ error: "an account with this email already exists" });
-  }
-
-  const passwordHash = await bcrypt.hash(password, 10);
-  const user = store.createUser({ name, email, passwordHash });
-
-  store.logActivity({ label: `New account created: ${name}`, source: "system" });
-
-  const token = signToken({ sub: user.id, email: user.email, name: user.name });
-  res.status(201).json({ token, user: { id: user.id, name: user.name, email: user.email } });
 });
 
 authRouter.post("/login", async (req, res) => {
-  const { email, password } = req.body as { email?: string; password?: string };
-  if (!email || !password) {
-    return res.status(400).json({ error: "email and password are required" });
+  try {
+    const { email, password } = req.body as { email?: string; password?: string };
+    if (!email || !password) {
+      return res.status(400).json({ error: "email and password are required" });
+    }
+
+    const user = await store.findUserByEmail(email);
+    if (!user) return res.status(401).json({ error: "invalid email or password" });
+    if (!user.passwordHash) {
+      return res.status(401).json({ error: "This account uses Google Sign-In. Please continue with Google." });
+    }
+
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) return res.status(401).json({ error: "invalid email or password" });
+
+    const token = signToken({ sub: user.id, email: user.email, name: user.name });
+    res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Login failed" });
   }
-
-  const user = store.findUserByEmail(email);
-  if (!user) return res.status(401).json({ error: "invalid email or password" });
-  if (!user.passwordHash) {
-    return res.status(401).json({ error: "This account uses Google Sign-In. Please continue with Google." });
-  }
-
-  const valid = await bcrypt.compare(password, user.passwordHash);
-  if (!valid) return res.status(401).json({ error: "invalid email or password" });
-
-  const token = signToken({ sub: user.id, email: user.email, name: user.name });
-  res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
 });
 
-authRouter.get("/me", requireAuth, (req: AuthedRequest, res) => {
-  const user = store.findUserById(req.user!.sub);
-  if (!user) return res.status(404).json({ error: "user not found" });
-  res.json({ id: user.id, name: user.name, email: user.email });
+authRouter.get("/me", requireAuth, async (req: AuthedRequest, res) => {
+  try {
+    const user = await store.findUserById(req.user!.sub);
+    if (!user) return res.status(404).json({ error: "user not found" });
+    res.json({ id: user.id, name: user.name, email: user.email });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not load user" });
+  }
 });
 
 authRouter.post("/google", async (req, res) => {
@@ -82,13 +97,13 @@ authRouter.post("/google", async (req, res) => {
       return res.status(401).json({ error: "Invalid Google credential" });
     }
 
-    const { user, created } = store.findOrCreateGoogleUser(
+    const { user, created } = await store.findOrCreateGoogleUser(
       payload.sub,
       payload.email,
       payload.name || payload.email.split("@")[0]
     );
 
-    store.logActivity({
+    await store.logActivity({
       label: created ? `New account created via Google: ${user.name}` : `Signed in via Google: ${user.name}`,
       source: "system",
     });

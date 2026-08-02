@@ -325,4 +325,29 @@ empty-state redesign for lists that are genuinely empty (low priority since
 the demo data means this rarely triggers), and dark mode (still its own
 dedicated pass, as noted earlier in this log).
 
+**Database migration — Supabase (Postgres)**
+- Migrated off the in-memory store entirely. Every route (auth, rules,
+  tickets, leads, activity log, dashboard stats) now reads/writes real
+  Postgres via Supabase — the #1 item from the production checklist above
+  is done.
+- New `backend/supabase/schema.sql` — run this once in your Supabase
+  project's SQL Editor before first use. Includes tables for users, rules,
+  tickets, leads, activity_log, plus two small Postgres functions
+  (`next_ticket_number`, `simulate_order`) for atomic counters that used to
+  be plain in-memory variables.
+- New `backend/src/lib/supabase.ts` — lazy-initialized client (same pattern
+  as the Anthropic client), using the secret key server-side only.
+- Every `store.*` function is now `async` — every route calling it was
+  updated to `await` it, including the cron jobs in `index.ts`.
+- Updated the Claude model string from `claude-sonnet-4-6` to `claude-sonnet-5`
+  (the newer default) across `ai.ts` and `audit.ts`.
+- **Important limitation**: this sandbox's network can't reach `supabase.co`
+  (confirmed directly — a raw request returns `host_not_allowed`), so the
+  live database connection itself is untested from here. The code compiles
+  clean (`tsc` + `npm run build` both pass) and the server boots correctly —
+  confirmed `/api/health` (no DB dependency) works and `/api/automation/rules`
+  (needs DB) fails with a clean, expected network error rather than a code
+  crash. **You'll need to run `schema.sql` in your Supabase project and do
+  the final live connectivity test yourself.**
+
 See `PROJECT-PLAN.md` for what's next.

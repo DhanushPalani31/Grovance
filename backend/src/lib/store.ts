@@ -1,10 +1,9 @@
 /**
- * Lightweight in-memory data layer for the demo.
- *
- * This is intentionally isolated behind simple functions so swapping to a
- * real database (Postgres via `pg`, or an ORM) later only means rewriting
- * this file — nothing in routes/ needs to change.
+ * Supabase-backed data layer. Every function here is now async (real network
+ * calls to Postgres), which is the main thing that changed for callers —
+ * every route using `store.*` needs to `await` it now.
  */
+import { getSupabase } from "./supabase";
 
 export interface ActivityItem {
   id: string;
@@ -12,33 +11,6 @@ export interface ActivityItem {
   source: "automation" | "ai" | "system" | "maintenance";
   timestamp: string;
 }
-
-const activityLog: ActivityItem[] = [
-  {
-    id: "1",
-    label: "Sent order confirmation email to a customer",
-    source: "automation",
-    timestamp: new Date(Date.now() - 1000 * 60 * 3).toISOString(),
-  },
-  {
-    id: "2",
-    label: "Low-stock alert sent for 'Ceramic Mug - Blue'",
-    source: "automation",
-    timestamp: new Date(Date.now() - 1000 * 60 * 42).toISOString(),
-  },
-  {
-    id: "3",
-    label: "AI Assistant answered a customer question about business hours",
-    source: "ai",
-    timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
-  },
-  {
-    id: "4",
-    label: "Daily sales summary generated",
-    source: "automation",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 14).toISOString(),
-  },
-];
 
 export interface User {
   id: string;
@@ -49,8 +21,6 @@ export interface User {
   createdAt: string;
 }
 
-const users: User[] = [];
-
 export interface Rule {
   id: string;
   trigger: string;
@@ -60,14 +30,6 @@ export interface Rule {
   runCount: number;
 }
 
-const rules: Rule[] = [
-  { id: "1", trigger: "New order placed", action: "Send confirmation email to customer", enabled: true, lastTriggeredAt: null, runCount: 0 },
-  { id: "2", trigger: "Stock falls below 5 units", action: "Notify owner via WhatsApp/email", enabled: true, lastTriggeredAt: null, runCount: 0 },
-  { id: "3", trigger: "Every day at 9 PM", action: "Generate daily sales summary", enabled: true, lastTriggeredAt: null, runCount: 0 },
-  { id: "4", trigger: "Customer inactive for 30 days", action: "Send a personalized win-back offer", enabled: false, lastTriggeredAt: null, runCount: 0 },
-  { id: "5", trigger: "Every Sunday", action: "Auto-backup brand data", enabled: true, lastTriggeredAt: null, runCount: 0 },
-];
-
 export interface Ticket {
   id: string;
   title: string;
@@ -75,31 +37,6 @@ export interface Ticket {
   createdAt: string;
   updatedAt: string;
 }
-
-const tickets: Ticket[] = [
-  {
-    id: "GRV-100",
-    title: "Fix product image upload",
-    status: "Resolved",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 70).toISOString(),
-  },
-  {
-    id: "GRV-101",
-    title: "Add new payment method",
-    status: "In Progress",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 20).toISOString(),
-  },
-  {
-    id: "GRV-102",
-    title: "Update business hours for holidays",
-    status: "Resolved",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-  },
-];
-let ticketCounter = 103;
 
 export interface Lead {
   id: string;
@@ -109,128 +46,262 @@ export interface Lead {
   createdAt: string;
 }
 
-const leads: Lead[] = [];
+function mapRule(row: any): Rule {
+  return {
+    id: row.id,
+    trigger: row.trigger_text,
+    action: row.action_text,
+    enabled: row.enabled,
+    lastTriggeredAt: row.last_triggered_at,
+    runCount: row.run_count,
+  };
+}
 
-let metrics = {
-  ordersToday: 41,
-  revenueToday: 2180,
-  lowStockItems: 3,
-};
+function mapTicket(row: any): Ticket {
+  return {
+    id: row.id,
+    title: row.title,
+    status: row.status,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function mapUser(row: any): User {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    passwordHash: row.password_hash,
+    googleId: row.google_id,
+    createdAt: row.created_at,
+  };
+}
+
+function mapActivity(row: any): ActivityItem {
+  return {
+    id: row.id,
+    label: row.label,
+    source: row.source,
+    timestamp: row.created_at,
+  };
+}
+
+function mapLead(row: any): Lead {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    message: row.message,
+    createdAt: row.created_at,
+  };
+}
 
 export const store = {
-  simulateOrder() {
+  async simulateOrder(): Promise<number> {
+    const sb = getSupabase();
     const orderValue = 15 + Math.round(Math.random() * 60);
-    metrics.ordersToday += 1;
-    metrics.revenueToday += orderValue;
+    const { error } = await sb.rpc("simulate_order", { order_value: orderValue });
+    if (error) throw error;
     return orderValue;
   },
-  getDashboardStats() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const automationEventsToday = activityLog.filter(
-      (a) => a.source === "automation" && new Date(a.timestamp) >= today
-    ).length;
+
+  async getDashboardStats() {
+    const sb = getSupabase();
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const [metricsRes, leadsRes, rulesRes, ticketsRes, automationEventsRes] = await Promise.all([
+      sb.from("metrics").select("*").eq("id", true).single(),
+      sb.from("leads").select("id", { count: "exact", head: true }),
+      sb.from("rules").select("enabled"),
+      sb.from("tickets").select("status"),
+      sb
+        .from("activity_log")
+        .select("id", { count: "exact", head: true })
+        .eq("source", "automation")
+        .gte("created_at", startOfToday.toISOString()),
+    ]);
+
+    if (metricsRes.error) throw metricsRes.error;
+
+    const rules = rulesRes.data || [];
+    const tickets = ticketsRes.data || [];
 
     return {
-      ordersToday: metrics.ordersToday,
-      revenueToday: metrics.revenueToday,
-      lowStockItems: metrics.lowStockItems,
-      newCustomersToday: leads.length, // real: derived from actual contact-form leads
-      activeAutomationRules: rules.filter((r) => r.enabled).length,
-      openTickets: tickets.filter((t) => t.status !== "Resolved").length,
-      automationEventsToday,
+      ordersToday: metricsRes.data.orders_today,
+      revenueToday: metricsRes.data.revenue_today,
+      lowStockItems: metricsRes.data.low_stock_items,
+      newCustomersToday: leadsRes.count || 0,
+      activeAutomationRules: rules.filter((r: any) => r.enabled).length,
+      openTickets: tickets.filter((t: any) => t.status !== "Resolved").length,
+      automationEventsToday: automationEventsRes.count || 0,
     };
   },
-  listActivity(): ActivityItem[] {
-    return [...activityLog].sort(
-      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    );
+
+  async listActivity(): Promise<ActivityItem[]> {
+    const sb = getSupabase();
+    const { data, error } = await sb
+      .from("activity_log")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) throw error;
+    return (data || []).map(mapActivity);
   },
-  logActivity(item: Omit<ActivityItem, "id" | "timestamp">) {
-    const entry: ActivityItem = {
-      ...item,
-      id: crypto.randomUUID(),
-      timestamp: new Date().toISOString(),
-    };
-    activityLog.unshift(entry);
-    return entry;
+
+  async logActivity(item: Omit<ActivityItem, "id" | "timestamp">): Promise<ActivityItem> {
+    const sb = getSupabase();
+    const { data, error } = await sb
+      .from("activity_log")
+      .insert({ label: item.label, source: item.source })
+      .select()
+      .single();
+    if (error) throw error;
+    return mapActivity(data);
   },
-  addLead(lead: Omit<Lead, "id" | "createdAt">) {
-    const entry: Lead = {
-      ...lead,
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-    };
-    leads.unshift(entry);
-    return entry;
+
+  async addLead(lead: Omit<Lead, "id" | "createdAt">): Promise<Lead> {
+    const sb = getSupabase();
+    const { data, error } = await sb.from("leads").insert(lead).select().single();
+    if (error) throw error;
+    return mapLead(data);
   },
-  listLeads(): Lead[] {
-    return [...leads];
+
+  async listLeads(): Promise<Lead[]> {
+    const sb = getSupabase();
+    const { data, error } = await sb.from("leads").select("*").order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data || []).map(mapLead);
   },
-  listRules(): Rule[] {
-    return [...rules];
+
+  async listRules(): Promise<Rule[]> {
+    const sb = getSupabase();
+    const { data, error } = await sb.from("rules").select("*").order("id");
+    if (error) throw error;
+    return (data || []).map(mapRule);
   },
-  toggleRule(id: string): Rule | undefined {
-    const rule = rules.find((r) => r.id === id);
-    if (!rule) return undefined;
-    rule.enabled = !rule.enabled;
-    return rule;
+
+  async toggleRule(id: string): Promise<Rule | undefined> {
+    const sb = getSupabase();
+    const { data: current } = await sb.from("rules").select("enabled").eq("id", id).single();
+    if (!current) return undefined;
+    const { data, error } = await sb
+      .from("rules")
+      .update({ enabled: !current.enabled })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) throw error;
+    return mapRule(data);
   },
-  runRule(id: string): Rule | undefined {
-    const rule = rules.find((r) => r.id === id);
-    if (!rule) return undefined;
-    rule.lastTriggeredAt = new Date().toISOString();
-    rule.runCount += 1;
-    return rule;
+
+  async runRule(id: string): Promise<Rule | undefined> {
+    const sb = getSupabase();
+    const { data: current } = await sb.from("rules").select("run_count").eq("id", id).single();
+    if (!current) return undefined;
+    const { data, error } = await sb
+      .from("rules")
+      .update({ last_triggered_at: new Date().toISOString(), run_count: current.run_count + 1 })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) throw error;
+    return mapRule(data);
   },
-  listTickets(): Ticket[] {
-    return [...tickets].sort(
-      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-    );
+
+  async listTickets(): Promise<Ticket[]> {
+    const sb = getSupabase();
+    const { data, error } = await sb.from("tickets").select("*").order("updated_at", { ascending: false });
+    if (error) throw error;
+    return (data || []).map(mapTicket);
   },
-  createTicket(title: string): Ticket {
-    const ticket: Ticket = {
-      id: `GRV-${ticketCounter++}`,
-      title,
-      status: "Open",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    tickets.push(ticket);
-    return ticket;
+
+  async createTicket(title: string): Promise<Ticket> {
+    const sb = getSupabase();
+    const { data: num, error: rpcError } = await sb.rpc("next_ticket_number");
+    if (rpcError) throw rpcError;
+    const id = `GRV-${num}`;
+    const { data, error } = await sb
+      .from("tickets")
+      .insert({ id, title, status: "Open" })
+      .select()
+      .single();
+    if (error) throw error;
+    return mapTicket(data);
   },
-  updateTicketStatus(id: string, status: Ticket["status"]): Ticket | undefined {
-    const ticket = tickets.find((t) => t.id === id);
-    if (!ticket) return undefined;
-    ticket.status = status;
-    ticket.updatedAt = new Date().toISOString();
-    return ticket;
+
+  async updateTicketStatus(id: string, status: Ticket["status"]): Promise<Ticket | undefined> {
+    const sb = getSupabase();
+    const { data, error } = await sb
+      .from("tickets")
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error || !data) return undefined;
+    return mapTicket(data);
   },
-  findUserByEmail(email: string): User | undefined {
-    return users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+
+  async findUserByEmail(email: string): Promise<User | undefined> {
+    const sb = getSupabase();
+    const { data } = await sb.from("users").select("*").ilike("email", email).maybeSingle();
+    return data ? mapUser(data) : undefined;
   },
-  findUserById(id: string): User | undefined {
-    return users.find((u) => u.id === id);
+
+  async findUserById(id: string): Promise<User | undefined> {
+    const sb = getSupabase();
+    const { data } = await sb.from("users").select("*").eq("id", id).maybeSingle();
+    return data ? mapUser(data) : undefined;
   },
-  createUser(user: Omit<User, "id" | "createdAt" | "googleId"> & { googleId?: string | null }): User {
-    const entry: User = {
-      ...user,
-      googleId: user.googleId ?? null,
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-    };
-    users.push(entry);
-    return entry;
+
+  async createUser(
+    user: Omit<User, "id" | "createdAt" | "googleId"> & { googleId?: string | null }
+  ): Promise<User> {
+    const sb = getSupabase();
+    const { data, error } = await sb
+      .from("users")
+      .insert({
+        name: user.name,
+        email: user.email,
+        password_hash: user.passwordHash,
+        google_id: user.googleId ?? null,
+      })
+      .select()
+      .single();
+    if (error) throw error;
+    return mapUser(data);
   },
-  findOrCreateGoogleUser(googleId: string, email: string, name: string): { user: User; created: boolean } {
-    let user = users.find((u) => u.googleId === googleId) || users.find((u) => u.email.toLowerCase() === email.toLowerCase());
-    if (user) {
-      if (!user.googleId) user.googleId = googleId;
-      return { user, created: false };
+
+  async findOrCreateGoogleUser(
+    googleId: string,
+    email: string,
+    name: string
+  ): Promise<{ user: User; created: boolean }> {
+    const sb = getSupabase();
+
+    const { data: byGoogleId } = await sb.from("users").select("*").eq("google_id", googleId).maybeSingle();
+    if (byGoogleId) return { user: mapUser(byGoogleId), created: false };
+
+    const { data: byEmail } = await sb.from("users").select("*").ilike("email", email).maybeSingle();
+    if (byEmail) {
+      const { data: updated, error } = await sb
+        .from("users")
+        .update({ google_id: googleId })
+        .eq("id", byEmail.id)
+        .select()
+        .single();
+      if (error) throw error;
+      return { user: mapUser(updated), created: false };
     }
-    user = { id: crypto.randomUUID(), name, email, passwordHash: null, googleId, createdAt: new Date().toISOString() };
-    users.push(user);
-    return { user, created: true };
+
+    const { data: created, error } = await sb
+      .from("users")
+      .insert({ name, email, password_hash: null, google_id: googleId })
+      .select()
+      .single();
+    if (error) throw error;
+    return { user: mapUser(created), created: true };
   },
 };
 

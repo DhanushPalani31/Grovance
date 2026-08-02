@@ -4,7 +4,7 @@ import { store } from "../lib/store";
 
 export const aiRouter = Router();
 
-const MODEL = "claude-sonnet-4-6";
+const MODEL = "claude-sonnet-5";
 
 aiRouter.post("/chat", async (req, res) => {
   const { message, persona } = req.body as { message?: string; persona?: "brand" | "marketing" };
@@ -30,7 +30,7 @@ aiRouter.post("/chat", async (req, res) => {
       .map((block) => (block.type === "text" ? block.text : ""))
       .join("\n");
 
-    store.logActivity({ label: "AI Assistant answered a customer question", source: "ai" });
+    await store.logActivity({ label: "AI Assistant answered a customer question", source: "ai" });
 
     res.json({ reply });
   } catch (err) {
@@ -69,7 +69,7 @@ aiRouter.post("/generate", async (req, res) => {
       .map((block) => (block.type === "text" ? block.text : ""))
       .join("\n");
 
-    store.logActivity({ label: `Content Studio generated a ${kind || "product-description"}`, source: "ai" });
+    await store.logActivity({ label: `Content Studio generated a ${kind || "product-description"}`, source: "ai" });
 
     res.json({ result });
   } catch (err) {
@@ -86,9 +86,9 @@ aiRouter.post("/insights", async (_req, res) => {
     });
   }
 
-  const activity = store.listActivity().slice(0, 15);
-  const rules = store.listRules();
-  const leads = store.listLeads();
+  const activity = (await store.listActivity()).slice(0, 15);
+  const rules = await store.listRules();
+  const leads = await store.listLeads();
 
   const contextSummary = `
 Recent activity log (most recent first):
@@ -111,7 +111,7 @@ New leads captured this period: ${leads.length}.
       .map((block) => (block.type === "text" ? block.text : ""))
       .join("\n");
 
-    store.logActivity({ label: "Weekly AI insights summary generated", source: "ai" });
+    await store.logActivity({ label: "Weekly AI insights summary generated", source: "ai" });
 
     res.json({ summary, generatedAt: new Date().toISOString() });
   } catch (err) {
