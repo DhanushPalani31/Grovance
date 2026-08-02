@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../../lib/AuthContext";
 
@@ -14,6 +14,8 @@ const links = [
 
 export default function Navbar() {
   const { user } = useAuth();
+  const location = useLocation();
+  const onAuditPage = location.pathname === "/audit";
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -57,18 +59,22 @@ export default function Navbar() {
               Log in
             </Link>
           )}
-          <Link
-            to="/audit"
-            className="hidden rounded-lg border border-brand/30 bg-brand/5 px-4 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/10 sm:block"
-          >
-            Free Audit
-          </Link>
-          <Link
-            to="/portal"
-            className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md"
-          >
-            {user ? "Go to Portal" : "View Live Demo"}
-          </Link>
+          {!onAuditPage && (
+            <>
+              <Link
+                to="/audit"
+                className="hidden rounded-lg border border-brand/30 bg-brand/5 px-4 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/10 sm:block"
+              >
+                Free Audit
+              </Link>
+              <Link
+                to="/portal"
+                className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md"
+              >
+                {user ? "Go to Portal" : "View Live Demo"}
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </motion.header>

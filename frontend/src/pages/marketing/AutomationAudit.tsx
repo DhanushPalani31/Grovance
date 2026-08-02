@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Sparkles, ArrowRight, CheckCircle2, Info } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
@@ -71,7 +71,7 @@ export default function AutomationAudit() {
         subtitle="Tell us about your business — get a personalized breakdown of what automation could do for you, generated live by the same AI Grovance actually runs on."
       />
 
-      <section className="mx-auto -mt-10 w-full max-w-2xl flex-1 px-6 pb-16">
+      <section className="mx-auto w-full max-w-2xl flex-1 px-6 pt-14 pb-16">
         <AnimatePresence mode="wait">
           {!result ? (
             <motion.form
@@ -188,7 +188,16 @@ export default function AutomationAudit() {
               </div>
 
               <div>
-                <h3 className="mb-3 text-sm font-semibold text-ink">Recommended for {businessName}</h3>
+                <div className="mb-3 flex items-center gap-1.5">
+                  <h3 className="text-sm font-semibold text-ink">Recommended for {businessName}</h3>
+                  <div className="group relative">
+                    <Info size={14} className="cursor-help text-slate-400" />
+                    <div className="pointer-events-none absolute left-1/2 top-full z-10 mt-2 w-56 -translate-x-1/2 rounded-lg bg-ink px-3 py-2 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                      "When" is the trigger that starts the automation, and "Then" is what
+                      happens automatically — no manual work needed.
+                    </div>
+                  </div>
+                </div>
                 <div className="space-y-3">
                   {result.tools.map((tool, i) => (
                     <motion.div
