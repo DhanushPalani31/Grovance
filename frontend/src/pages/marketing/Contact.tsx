@@ -4,6 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
+import DarkHeader from "../../components/marketing/DarkHeader";
 import { api } from "../../lib/api";
 
 export default function Contact() {
@@ -24,13 +25,21 @@ export default function Contact() {
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
-      <section className="mx-auto max-w-xl px-6 py-16">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-        <h1 className="text-3xl font-bold text-ink">Get in touch</h1>
-        <p className="mt-3 text-slate-600">
-          Tell us about your brand and what you'd like automated. Submitting this form is
-          itself an automation — it's logged instantly in the same Activity Feed you'll
-          see in the demo portal.
+      <DarkHeader
+        eyebrow="Let's talk"
+        title="Get in touch"
+        subtitle="Tell us about your brand and what you'd like automated."
+      />
+      <section className="mx-auto -mt-10 max-w-xl px-6 pb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="rounded-xl border border-slate-200 bg-white p-8 shadow-lg"
+        >
+        <p className="text-sm text-slate-500">
+          Submitting this form is itself an automation — it's logged instantly in the
+          same Activity Feed you'll see in the demo portal.
         </p>
 
         {status === "sent" ? (

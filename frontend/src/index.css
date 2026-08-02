@@ -46,3 +46,9 @@ body {
   transition-duration: 150ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Subtle dot-grid texture for dark hero/header bands */
+.hero-grid {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 22px 22px;
+}

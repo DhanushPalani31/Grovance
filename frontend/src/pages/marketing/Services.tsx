@@ -18,6 +18,7 @@ import {
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
+import DarkHeader from "../../components/marketing/DarkHeader";
 
 // Custom App Development listed first, per how we lead with clients — a bespoke
 // build is the entry point, with automation/AI/maintenance layered in as needed.
@@ -103,13 +104,11 @@ export default function Services() {
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
-      <section className="mx-auto max-w-4xl px-6 py-16 text-center">
-        <h1 className="text-3xl font-bold text-ink">Services</h1>
-        <p className="mt-3 text-slate-600">
-          Four services, working together — and every one is running live in the demo
-          portal, not just described here.
-        </p>
-      </section>
+      <DarkHeader
+        eyebrow="What we build"
+        title="Services"
+        subtitle="Four services, working together — and every one is running live in the demo portal, not just described here."
+      />
 
       <section className="mx-auto max-w-4xl space-y-6 px-6 pb-16">
         {services.map(({ icon: Icon, title, description, demoLabel, demoLink }, i) => (

@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
+import DarkHeader from "../../components/marketing/DarkHeader";
 
 const tiers = [
   {
@@ -41,13 +42,11 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
-      <section className="mx-auto max-w-4xl px-6 py-16 text-center">
-        <h1 className="text-3xl font-bold text-ink">Pricing</h1>
-        <p className="mt-3 text-slate-600">
-          Every engagement is scoped around what your brand actually needs — these are
-          starting points for a conversation, not a fixed menu.
-        </p>
-      </section>
+      <DarkHeader
+        eyebrow="Simple, scoped pricing"
+        title="Pricing"
+        subtitle="Every engagement is scoped around what your brand actually needs — these are starting points for a conversation, not a fixed menu."
+      />
 
       <section className="mx-auto max-w-5xl px-6 pb-24">
         <div className="grid gap-6 md:grid-cols-3">

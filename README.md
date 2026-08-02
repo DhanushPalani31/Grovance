@@ -208,4 +208,26 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
   achieves the same visual result client-side without a bigger SSE/streaming
   architecture change
 
+**Marketing site redesign — bold dark hero + light product pages:**
+- Direction chosen after reviewing Dribbble/Awwards references: bold, dark,
+  glow-accented hero treatment for the *marketing* site (what needs to sell),
+  while the *portal* stays light and clean (what people use daily for real
+  data). Strictly the existing navy/teal brand + semantic system — no new
+  colors introduced.
+- New `DarkHeader` component: a dark navy header band (with animated glow
+  accents and a subtle dot-grid texture) applied consistently across Services,
+  Pricing, About, Careers, and Contact
+- Landing page rebuilt with a full bold hero: large gradient headline, a
+  live "everything below is real" badge, and **floating stat cards showing
+  actual live numbers** (automation events fired today, active automation
+  rules, system status) pulled from the real backend — replacing decorative
+  icons with real proof, in keeping with the app's core "don't just say it,
+  show it" principle
+- Pillar cards now layer up over the hero's bottom edge for a premium
+  overlapping-panel look
+- Verified: full type-check + production build pass, plus a live smoke test
+  with both servers running — every marketing route returns HTTP 200 and the
+  two APIs the new hero depends on (`/api/health`, `/api/automation/stats`)
+  both respond correctly
+
 See `PROJECT-PLAN.md` for what's next.
