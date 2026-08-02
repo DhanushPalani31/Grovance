@@ -49,7 +49,7 @@ export default function Landing() {
       <Navbar />
 
       {/* Bold dark hero — the marketing "wow", proven with real live numbers instead of decoration */}
-      <section className="relative overflow-hidden bg-ink pb-32 pt-20 text-center">
+      <section className="relative overflow-hidden bg-ink pb-16 pt-20 text-center">
         <HeroBackground />
 
         <div className="relative mx-auto max-w-4xl px-6">
@@ -147,8 +147,8 @@ export default function Landing() {
         )}
       </section>
 
-      {/* Pillar cards layered up over the hero's bottom edge — premium overlap treatment */}
-      <section className="mx-auto -mt-16 max-w-6xl px-6 pb-24">
+      {/* Pillar cards */}
+      <section className="mx-auto max-w-6xl px-6 pb-24 pt-14">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {pillars.map(({ icon: Icon, title, copy }, i) => (
             <motion.div

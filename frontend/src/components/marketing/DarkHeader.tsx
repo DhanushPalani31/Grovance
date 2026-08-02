@@ -14,7 +14,7 @@ export default function DarkHeader({
   children?: ReactNode;
 }) {
   return (
-    <section className="relative overflow-hidden bg-ink py-20 text-center">
+    <section className="relative overflow-hidden bg-ink pb-12 pt-16 text-center">
       <HeroBackground />
       <div className="relative mx-auto max-w-3xl px-6">
         {eyebrow && (

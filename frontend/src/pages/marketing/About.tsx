@@ -14,7 +14,7 @@ export default function About() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mx-auto -mt-10 max-w-3xl flex-1 px-6 pb-16"
+        className="mx-auto max-w-3xl flex-1 px-6 pt-14 pb-16"
       >
         <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-lg">
           <p className="text-slate-600 leading-relaxed">

@@ -15,7 +15,7 @@ export default function Careers() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mx-auto -mt-10 flex max-w-2xl flex-1 flex-col items-center px-6 pb-16 text-center"
+        className="mx-auto flex max-w-2xl flex-1 flex-col items-center px-6 pt-14 pb-16 text-center"
       >
         <div className="w-full rounded-xl border border-slate-200 bg-white p-10 shadow-lg">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-brand/10 text-brand">

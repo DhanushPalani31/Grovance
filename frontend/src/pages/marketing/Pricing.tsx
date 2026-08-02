@@ -48,7 +48,7 @@ export default function Pricing() {
         subtitle="Every engagement is scoped around what your brand actually needs — these are starting points for a conversation, not a fixed menu."
       />
 
-      <section className="mx-auto max-w-5xl px-6 pb-24">
+      <section className="mx-auto max-w-5xl px-6 pt-14 pb-24">
         <div className="grid gap-6 md:grid-cols-3">
           {tiers.map((tier, i) => (
             <motion.div

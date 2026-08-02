@@ -110,7 +110,7 @@ export default function Services() {
         subtitle="Four services, working together — and every one is running live in the demo portal, not just described here."
       />
 
-      <section className="mx-auto max-w-4xl space-y-6 px-6 pb-16">
+      <section className="mx-auto max-w-4xl space-y-6 px-6 pt-14 pb-16">
         {services.map(({ icon: Icon, title, description, demoLabel, demoLink }, i) => (
           <motion.div
             key={title}

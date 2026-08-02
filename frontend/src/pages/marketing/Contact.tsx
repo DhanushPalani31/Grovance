@@ -30,7 +30,7 @@ export default function Contact() {
         title="Get in touch"
         subtitle="Tell us about your brand and what you'd like automated."
       />
-      <section className="mx-auto -mt-10 max-w-xl px-6 pb-16">
+      <section className="mx-auto max-w-xl px-6 pt-14 pb-16">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
