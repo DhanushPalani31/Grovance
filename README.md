@@ -437,3 +437,39 @@ handling still works as expected.
   fields are correctly validated and passed through to Gemini (request
   reached the real API and failed only on this sandbox's known network
   block, same as every other live-AI test in this log).
+
+---
+
+## Real Google Search grounding for competitor analysis — not just reasoning
+
+Pushed back on directly: the earlier "competitive insight" was honest but
+explicitly NOT researched — general industry-pattern reasoning, no actual
+search. Fair challenge that this wasn't real analysis. Fixed properly:
+
+- **Migrated off `@google/generative-ai` entirely** — discovered while
+  investigating this that it's now the deprecated package (its own GitHub
+  repo is literally renamed `deprecated-generative-ai-js`). Moved to the
+  current `@google/genai` SDK.
+- **Added real Google Search grounding** to the Audit tool specifically —
+  the model now has live web search access and is instructed to actually
+  search for comparable businesses in the visitor's category/location
+  before writing the competitive-insight section, instead of reasoning
+  from general knowledge alone.
+- **Cost check**: Google Search grounding has its own free tier — 5,000
+  free grounded prompts/month on the Gemini 3.x family, then a small
+  per-query cost beyond that. Comfortably free at this app's traffic scale.
+- **Responsible-use guardrails built into the prompt**: even with real
+  search, the model is instructed to never invent a competitor's name or
+  claim something it didn't actually find, and to stick to neutral,
+  observable facts rather than disparaging a specific named competitor —
+  real research, without becoming an attack tool.
+- Switched the audit endpoint back to manual JSON parsing (with defensive
+  markdown-fence stripping) since combining forced JSON response mode with
+  search-grounding tools isn't reliably supported together.
+- Chat endpoint (`ai.ts`) updated to the new SDK too, since the old
+  package was removed entirely.
+- Verified: tsc + build pass. Live-tested with the real key already in
+  this sandbox — both `/api/ai/chat` and `/api/audit` correctly built and
+  sent their requests (including the grounding tool config) and failed
+  only on this sandbox's standing network block, confirming the migration
+  itself is structurally correct.

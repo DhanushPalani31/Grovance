@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getGeminiJsonModel, AUDIT_SYSTEM_PROMPT } from "../lib/gemini";
+import { generateGroundedText, isConfigured, AUDIT_SYSTEM_PROMPT } from "../lib/gemini";
 import { store } from "../lib/store";
 
 export const auditRouter = Router();
@@ -46,8 +46,7 @@ auditRouter.post("/", async (req, res) => {
     return res.status(400).json({ error: "businessName and category are required" });
   }
 
-  const model = getGeminiJsonModel(AUDIT_SYSTEM_PROMPT);
-  if (!model) {
+  if (!isConfigured()) {
     return res.status(503).json({ error: "GEMINI_API_KEY not configured on the server" });
   }
 
@@ -60,12 +59,20 @@ What they currently have/lack (selected from a checklist): ${
   }`;
 
   try {
-    const genResult = await model.generateContent(context);
-    const rawText = genResult.response.text().trim();
+    const genResult = await generateGroundedText(AUDIT_SYSTEM_PROMPT, context);
+    if (!genResult) {
+      return res.status(503).json({ error: "GEMINI_API_KEY not configured on the server" });
+    }
+
+    // Defensive: strip accidental markdown code fences. The prompt asks for
+    // raw JSON, but combining the search-grounding tool with strict JSON mode
+    // isn't reliably supported, so we parse the text response manually.
+    const rawText = genResult.text.trim();
+    const cleaned = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
 
     let result: AuditResult;
     try {
-      result = JSON.parse(rawText);
+      result = JSON.parse(cleaned);
     } catch {
       console.error("Audit JSON parse failed, raw text:", rawText);
       return res.status(502).json({ error: "Could not generate a valid audit right now" });
