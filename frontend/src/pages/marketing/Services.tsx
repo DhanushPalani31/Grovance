@@ -25,7 +25,7 @@ import DarkHeader from "../../components/marketing/DarkHeader";
 const services = [
   {
     icon: Code2,
-    title: "Custom app development",
+    title: "Custom application development",
     description:
       "We design and build a bespoke application around your exact requirements — web, internal tools, integrations. Gemini is brought in for AI-assisted features only where it adds real, measurable value, not as a default.",
     demoLabel: "Start a custom project →",

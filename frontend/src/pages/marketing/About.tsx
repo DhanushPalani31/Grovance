@@ -18,17 +18,18 @@ export default function About() {
       >
         <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-lg">
           <p className="text-slate-600 leading-relaxed">
-            Grovance was built on a simple idea: brands deserve the same automation
-            and AI tooling that large e-commerce brands take for granted, without the
-            enterprise price tag or the black-box mystery. We build each engagement
-            around what a specific business actually needs, then stay on to run and
-            maintain it.
+            Grovance was built on a simple idea: brands deserve the same custom
+            applications, automation, and AI tooling that large e-commerce brands take
+            for granted, without the enterprise price tag or the black-box mystery. We
+            build each engagement around what a specific business actually needs —
+            whether that's a bespoke application, an automated workflow, or an AI
+            feature — then stay on to run and maintain it.
           </p>
           <p className="mt-4 text-slate-600 leading-relaxed">
             The chat assistant on this site and the free Automation Audit are real,
-            working examples of that philosophy. We don't ask you to imagine what
-            automation and AI could do for your brand; we show you, live, before you've
-            even talked to us.
+            working examples of that philosophy. We don't ask you to imagine what a
+            custom application, automation, or AI could do for your brand; we show you,
+            live, before you've even talked to us.
           </p>
         </div>
 
@@ -36,7 +37,7 @@ export default function About() {
           {[
             { label: "Founded", value: "2025" },
             { label: "Focus", value: "Brands & growing businesses" },
-            { label: "Approach", value: "Custom Apps + Automation + AI + Maintenance" },
+            { label: "Approach", value: "Custom Applications + Automation + AI + Maintenance" },
           ].map((item, i) => (
             <motion.div
               key={item.label}

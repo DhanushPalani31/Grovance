@@ -13,7 +13,7 @@ import { api, type HealthStatus } from "../../lib/api";
 const pillars = [
   {
     icon: Code2,
-    title: "Custom app development",
+    title: "Custom application development",
     copy: "Need something beyond the standard modules? We design and build bespoke applications around your exact requirements — with Gemini integrated wherever it genuinely helps.",
   },
   {
