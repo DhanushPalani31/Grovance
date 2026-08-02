@@ -9,7 +9,11 @@ function getClient(): GoogleGenerativeAI | null {
   return client;
 }
 
-const MODEL_NAME = "gemini-2.5-flash";
+// gemini-2.5-flash was cut off for new API keys ahead of its official
+// shutdown date — confirmed via a real 404 from a live key. gemini-3.5-flash-lite
+// is the current GA model, explicitly built for cost-efficient, high-volume
+// automation — a good match for this app's free-tier constraint.
+const MODEL_NAME = "gemini-3.5-flash-lite";
 
 /**
  * Get a Gemini model instance configured with a system prompt.
