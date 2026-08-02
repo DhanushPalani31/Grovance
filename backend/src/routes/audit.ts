@@ -28,13 +28,16 @@ interface AuditTool {
 interface AuditResult {
   tagline: string;
   painPoints: string[];
+  competitiveInsight: string;
   tools: AuditTool[];
 }
 
 auditRouter.post("/", async (req, res) => {
-  const { businessName, category, currentSetup, email } = req.body as {
+  const { businessName, category, location, customNeeds, currentSetup, email } = req.body as {
     businessName?: string;
     category?: string;
+    location?: string;
+    customNeeds?: string;
     currentSetup?: string[];
     email?: string;
   };
@@ -50,7 +53,9 @@ auditRouter.post("/", async (req, res) => {
 
   const context = `Business name: ${businessName}
 Category: ${category}
-What they currently have/lack: ${
+Location: ${location || "not specified"}
+In their own words, what they're looking for: ${customNeeds?.trim() || "not provided"}
+What they currently have/lack (selected from a checklist): ${
     currentSetup && currentSetup.length ? currentSetup.join("; ") : "not specified"
   }`;
 
@@ -83,7 +88,11 @@ What they currently have/lack: ${
 
     // Log as a real lead if they left an email — same pipeline as the Contact form
     if (email) {
-      await store.addLead({ name: businessName, email, message: `Automation Audit requested (${category})` });
+      await store.addLead({
+        name: businessName,
+        email,
+        message: `Automation Audit requested (${category}${location ? `, ${location}` : ""})`,
+      });
     }
     await store.logActivity({
       label: `Automation Audit generated for "${businessName}" (${category})`,

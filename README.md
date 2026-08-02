@@ -410,3 +410,30 @@ on the first pass despite the scale of the removal). Live smoke test with
 both servers running confirmed every remaining route returns 200, the
 backend health check responds correctly, and the audit endpoint's error
 handling still works as expected.
+
+---
+
+## Audit tool: competitor analysis + location + custom needs
+
+- **Form reordered**: business name + location now sit together at the
+  top, followed by a free-text "in your own words, what do you need?"
+  box, then the preset checklist as a fallback for anyone who'd rather
+  click than type. The prompt explicitly prioritizes the free-text
+  answer over the checkboxes when both are given.
+- **Competitor analysis added**: the audit now includes a "Where you
+  could get ahead" section — reasoning about what's typical for
+  unautomated businesses in that category (and general market context
+  from the location), and how the recommended tools would put this
+  business ahead of that baseline.
+- **Important honesty guardrail, built into the prompt itself**: Gemini
+  is explicitly instructed it has NOT researched this business's actual
+  named competitors and must never claim to — only honest, general
+  industry-pattern reasoning, never fabricated specifics about a real
+  rival business. This was a deliberate design choice, not an oversight.
+- Backend: `audit.ts` now accepts `location` and `customNeeds`, returns
+  a new `competitiveInsight` field alongside the existing pain points
+  and tool recommendations.
+- Verified: tsc + build pass on both sides; live-tested that the new
+  fields are correctly validated and passed through to Gemini (request
+  reached the real API and failed only on this sandbox's known network
+  block, same as every other live-AI test in this log).

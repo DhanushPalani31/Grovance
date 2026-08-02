@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ArrowRight, CheckCircle2, Info } from "lucide-react";
+import { Sparkles, ArrowRight, CheckCircle2, Info, TrendingUp } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
@@ -27,7 +27,9 @@ const setupOptions = [
 
 export default function AutomationAudit() {
   const [businessName, setBusinessName] = useState("");
+  const [location, setLocation] = useState("");
   const [category, setCategory] = useState(categories[0]);
+  const [customNeeds, setCustomNeeds] = useState("");
   const [currentSetup, setCurrentSetup] = useState<string[]>([]);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -46,10 +48,10 @@ export default function AutomationAudit() {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.runAudit(businessName, category, currentSetup, email || undefined);
+      const res = await api.runAudit(businessName, category, location, customNeeds, currentSetup, email || undefined);
       setResult(res);
     } catch {
-      setError("Couldn't generate your audit right now — make sure the backend is running with an GEMINI_API_KEY set.");
+      setError("Couldn't generate your audit right now — make sure the backend is running with a GEMINI_API_KEY set.");
     } finally {
       setLoading(false);
     }
@@ -58,6 +60,8 @@ export default function AutomationAudit() {
   const reset = () => {
     setResult(null);
     setBusinessName("");
+    setLocation("");
+    setCustomNeeds("");
     setCurrentSetup([]);
     setEmail("");
   };
@@ -82,15 +86,26 @@ export default function AutomationAudit() {
               onSubmit={submit}
               className="rounded-xl border border-slate-200 bg-white p-8 shadow-lg"
             >
-              <div className="mb-4">
-                <label className="mb-1 block text-sm font-medium text-slate-700">Business name</label>
-                <input
-                  required
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="e.g. Aroma Spice Kitchen"
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
-                />
+              <div className="mb-4 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">Business name</label>
+                  <input
+                    required
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    placeholder="e.g. Aroma Spice Kitchen"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">Location</label>
+                  <input
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g. Chennai"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
+                  />
+                </div>
               </div>
 
               <div className="mb-4">
@@ -109,8 +124,21 @@ export default function AutomationAudit() {
               </div>
 
               <div className="mb-4">
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  In your own words, what do you need? <span className="font-normal text-slate-400">(optional, but the more specific the better)</span>
+                </label>
+                <textarea
+                  value={customNeeds}
+                  onChange={(e) => setCustomNeeds(e.target.value)}
+                  rows={3}
+                  placeholder="e.g. I keep missing WhatsApp orders after closing time and want something to handle that automatically"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
+                />
+              </div>
+
+              <div className="mb-4">
                 <label className="mb-2 block text-sm font-medium text-slate-700">
-                  Which of these describe your business? (select any)
+                  Or just tell us which of these are true (select any)
                 </label>
                 <div className="space-y-2">
                   {setupOptions.map((option) => (
@@ -165,6 +193,7 @@ export default function AutomationAudit() {
               <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-lg">
                 <p className="text-xs font-semibold uppercase tracking-wide text-accent">
                   Audit for {businessName}
+                  {location ? ` · ${location}` : ""}
                 </p>
                 <h2 className="mt-2 text-2xl font-bold text-ink">{result.tagline}</h2>
 
@@ -185,6 +214,21 @@ export default function AutomationAudit() {
                     ))}
                   </ul>
                 </div>
+
+                {result.competitiveInsight && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="mt-6 rounded-lg border border-info/20 bg-info/5 p-4"
+                  >
+                    <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-info">
+                      <TrendingUp size={13} />
+                      Where you could get ahead
+                    </div>
+                    <p className="text-sm text-slate-700">{result.competitiveInsight}</p>
+                  </motion.div>
+                )}
               </div>
 
               <div>

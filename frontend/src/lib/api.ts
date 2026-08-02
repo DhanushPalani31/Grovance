@@ -33,6 +33,7 @@ export interface AuditTool {
 export interface AuditResult {
   tagline: string;
   painPoints: string[];
+  competitiveInsight: string;
   tools: AuditTool[];
 }
 
@@ -48,9 +49,16 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ name, email, message }),
     }),
-  runAudit: (businessName: string, category: string, currentSetup: string[], email?: string) =>
+  runAudit: (
+    businessName: string,
+    category: string,
+    location: string,
+    customNeeds: string,
+    currentSetup: string[],
+    email?: string
+  ) =>
     request<AuditResult>("/api/audit", {
       method: "POST",
-      body: JSON.stringify({ businessName, category, currentSetup, email }),
+      body: JSON.stringify({ businessName, category, location, customNeeds, currentSetup, email }),
     }),
 };
