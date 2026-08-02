@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const TITLES: Record<string, string> = {
-  "/": "Grovance — Automate. Intelligence. Grow.",
+  "/": "Grovance — Custom Apps. Automation. Intelligence.",
   "/services": "Services — Grovance",
   "/pricing": "Pricing — Grovance",
   "/contact": "Contact — Grovance",

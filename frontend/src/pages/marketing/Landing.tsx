@@ -66,7 +66,7 @@ export default function Landing() {
             transition={{ duration: 0.5, delay: 0.05 }}
             className="text-4xl font-bold text-white md:text-6xl"
           >
-            Automation, AI, and maintenance —{" "}
+            Custom applications, automation, and AI —{" "}
             <span className="bg-gradient-to-r from-accent to-white bg-clip-text text-transparent">
               built for growing brands
             </span>
