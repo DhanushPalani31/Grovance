@@ -225,6 +225,9 @@ export default function AutomationAudit() {
                     <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-info">
                       <TrendingUp size={13} />
                       Where you could get ahead
+                      <span className="ml-auto rounded-full bg-info/10 px-2 py-0.5 text-[10px] font-medium normal-case text-info">
+                        {result.grounded ? "Backed by live search" : "General industry reasoning"}
+                      </span>
                     </div>
                     <p className="text-sm text-slate-700">{result.competitiveInsight}</p>
                   </motion.div>

@@ -473,3 +473,36 @@ search. Fair challenge that this wasn't real analysis. Fixed properly:
   sent their requests (including the grounding tool config) and failed
   only on this sandbox's standing network block, confirming the migration
   itself is structurally correct.
+
+---
+
+## Automatic fallback when Google Search grounding hits a quota wall
+
+The 429 RESOURCE_EXHAUSTED error reported (repeating across multiple
+attempts, not just once) matches a known pattern: Google Search grounding
+can require a billing-linked project even within its nominal "5,000 free"
+allowance — some free-tier accounts get a hard zero-quota on the grounding
+tool specifically, while the base chat API works fine.
+
+Rather than make that a hard requirement, built an automatic fallback:
+
+- `audit.ts` now tries grounded (real search) generation first
+- If that specific call fails with a 429/RESOURCE_EXHAUSTED error, it
+  automatically retries using `AUDIT_SYSTEM_PROMPT_FALLBACK` — a distinct
+  prompt that explicitly tells the model it does NOT have search access
+  this time, so it never falsely claims to have researched something it
+  didn't
+- The response now includes a `grounded: boolean` field, and the frontend
+  shows a small honest label on the competitive-insight card: "Backed by
+  live search" vs "General industry reasoning" — so it's never ambiguous
+  which one actually happened
+- The fallback only triggers on quota-specific errors (429/RESOURCE_EXHAUSTED)
+  — verified in this sandbox that a different kind of failure (network
+  block, 403) correctly does NOT trigger the fallback and surfaces as a
+  real error instead, so this doesn't mask unrelated problems
+
+Verified: tsc + build pass on both sides. Could not fully exercise the
+quota-triggered fallback path itself from this sandbox (its own calls
+fail on the network block before ever reaching Google's quota check), but
+the fallback's error-matching logic directly targets the exact error
+format reported.

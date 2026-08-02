@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { generateGroundedText, isConfigured, AUDIT_SYSTEM_PROMPT } from "../lib/gemini";
+import { generateGroundedText, generateText, isConfigured, AUDIT_SYSTEM_PROMPT, AUDIT_SYSTEM_PROMPT_FALLBACK } from "../lib/gemini";
 import { store } from "../lib/store";
 
 export const auditRouter = Router();
@@ -59,7 +59,26 @@ What they currently have/lack (selected from a checklist): ${
   }`;
 
   try {
-    const genResult = await generateGroundedText(AUDIT_SYSTEM_PROMPT, context);
+    let genResult;
+    let grounded = true;
+    try {
+      genResult = await generateGroundedText(AUDIT_SYSTEM_PROMPT, context);
+    } catch (groundedErr) {
+      // Google Search grounding can require a billing-linked project even
+      // within its nominal free allowance — some accounts get a hard quota
+      // wall on the grounding tool specifically while the base API works
+      // fine. Rather than fail the whole audit, fall back to an honest,
+      // non-grounded generation instead (with a prompt that does NOT claim
+      // to have searched, so it never fabricates a "real research" claim).
+      const message = groundedErr instanceof Error ? groundedErr.message : String(groundedErr);
+      const isQuotaError = message.includes("429") || message.includes("RESOURCE_EXHAUSTED");
+      if (!isQuotaError) throw groundedErr;
+
+      console.warn("Search grounding failed (quota/billing), falling back to ungrounded generation:", message);
+      grounded = false;
+      genResult = await generateText(AUDIT_SYSTEM_PROMPT_FALLBACK, context);
+    }
+
     if (!genResult) {
       return res.status(503).json({ error: "GEMINI_API_KEY not configured on the server" });
     }
@@ -102,11 +121,11 @@ What they currently have/lack (selected from a checklist): ${
       });
     }
     await store.logActivity({
-      label: `Automation Audit generated for "${businessName}" (${category})`,
+      label: `Automation Audit generated for "${businessName}" (${category})${grounded ? "" : " [ungrounded fallback]"}`,
       source: "ai",
     });
 
-    res.json(result);
+    res.json({ ...result, grounded });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Audit generation failed" });

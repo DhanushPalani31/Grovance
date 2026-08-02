@@ -35,6 +35,7 @@ export interface AuditResult {
   painPoints: string[];
   competitiveInsight: string;
   tools: AuditTool[];
+  grounded: boolean;
 }
 
 export const api = {
