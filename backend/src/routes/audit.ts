@@ -1,10 +1,8 @@
 import { Router } from "express";
-import { getAnthropicClient, AUDIT_SYSTEM_PROMPT } from "../lib/anthropic";
+import { getGeminiJsonModel, AUDIT_SYSTEM_PROMPT } from "../lib/gemini";
 import { store } from "../lib/store";
 
 export const auditRouter = Router();
-
-const MODEL = "claude-sonnet-5";
 
 const VALID_TOOL_NAMES = [
   "Auto-Reply",
@@ -45,9 +43,9 @@ auditRouter.post("/", async (req, res) => {
     return res.status(400).json({ error: "businessName and category are required" });
   }
 
-  const anthropic = getAnthropicClient();
-  if (!anthropic) {
-    return res.status(503).json({ error: "ANTHROPIC_API_KEY not configured on the server" });
+  const model = getGeminiJsonModel(AUDIT_SYSTEM_PROMPT);
+  if (!model) {
+    return res.status(503).json({ error: "GEMINI_API_KEY not configured on the server" });
   }
 
   const context = `Business name: ${businessName}
@@ -57,26 +55,12 @@ What they currently have/lack: ${
   }`;
 
   try {
-    const response = await anthropic.messages.create({
-      model: MODEL,
-      max_tokens: 700,
-      system: AUDIT_SYSTEM_PROMPT,
-      messages: [{ role: "user", content: context }],
-    });
-
-    const rawText = response.content
-      .filter((b) => b.type === "text")
-      .map((b) => (b.type === "text" ? b.text : ""))
-      .join("\n")
-      .trim();
-
-    // Defensive: strip accidental markdown code fences even though the prompt
-    // explicitly forbids them — models occasionally add them anyway.
-    const text = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+    const genResult = await model.generateContent(context);
+    const rawText = genResult.response.text().trim();
 
     let result: AuditResult;
     try {
-      result = JSON.parse(text);
+      result = JSON.parse(rawText);
     } catch {
       console.error("Audit JSON parse failed, raw text:", rawText);
       return res.status(502).json({ error: "Could not generate a valid audit right now" });

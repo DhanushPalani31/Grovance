@@ -49,7 +49,7 @@ export default function AutomationAudit() {
       const res = await api.runAudit(businessName, category, currentSetup, email || undefined);
       setResult(res);
     } catch {
-      setError("Couldn't generate your audit right now — make sure the backend is running with an ANTHROPIC_API_KEY set.");
+      setError("Couldn't generate your audit right now — make sure the backend is running with an GEMINI_API_KEY set.");
     } finally {
       setLoading(false);
     }

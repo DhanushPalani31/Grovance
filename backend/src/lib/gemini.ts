@@ -1,12 +1,40 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI, type GenerativeModel } from "@google/generative-ai";
 
-let client: Anthropic | null = null;
+let client: GoogleGenerativeAI | null = null;
 
-export function getAnthropicClient(): Anthropic | null {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+function getClient(): GoogleGenerativeAI | null {
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
-  if (!client) client = new Anthropic({ apiKey });
+  if (!client) client = new GoogleGenerativeAI(apiKey);
   return client;
+}
+
+const MODEL_NAME = "gemini-2.5-flash";
+
+/**
+ * Get a Gemini model instance configured with a system prompt.
+ * Returns null if GEMINI_API_KEY isn't set — every route checks for this
+ * and returns a clear 503 instead of crashing, same pattern as before.
+ */
+export function getGeminiModel(systemInstruction: string): GenerativeModel | null {
+  const genAI = getClient();
+  if (!genAI) return null;
+  return genAI.getGenerativeModel({ model: MODEL_NAME, systemInstruction });
+}
+
+/**
+ * Same as getGeminiModel, but configures the model to return raw JSON —
+ * used by the Automation Audit tool instead of manually stripping markdown
+ * fences from a text response.
+ */
+export function getGeminiJsonModel(systemInstruction: string): GenerativeModel | null {
+  const genAI = getClient();
+  if (!genAI) return null;
+  return genAI.getGenerativeModel({
+    model: MODEL_NAME,
+    systemInstruction,
+    generationConfig: { responseMimeType: "application/json" },
+  });
 }
 
 export const BRAND_SYSTEM_PROMPT = `You are the AI Assistant embedded in a Grovance-powered
@@ -59,7 +87,7 @@ Rules for quality and accuracy:
 You may only recommend tools from this exact list — never invent a tool name:
 ${AVAILABLE_TOOLS}
 
-Respond with ONLY valid JSON, no markdown fences, no preamble, in exactly this shape:
+Respond with ONLY valid JSON, in exactly this shape:
 {
   "tagline": "a short, specific one-line headline for their business, under 12 words",
   "painPoints": ["2-3 short, honest observations grounded in what they described"],

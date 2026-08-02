@@ -29,8 +29,8 @@ account or the Service.`,
   },
   {
     title: "4. AI Processing and Third Parties",
-    body: `Messages you send to the AI Assistant or Content Studio are sent to Anthropic's
-Claude API to generate a response. We do not sell your personal information to third parties.
+    body: `Messages you send to the AI Assistant or Content Studio are sent to Google's
+Gemini API to generate a response. We do not sell your personal information to third parties.
 We may share limited information with infrastructure providers (such as hosting and email
 delivery services) solely to operate the Service, under contractual confidentiality
 obligations.`,

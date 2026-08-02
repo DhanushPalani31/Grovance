@@ -15,7 +15,7 @@ const pillars = [
   {
     icon: Code2,
     title: "Custom app development",
-    copy: "Need something beyond the standard modules? We design and build bespoke applications around your exact requirements — with Claude integrated wherever it genuinely helps.",
+    copy: "Need something beyond the standard modules? We design and build bespoke applications around your exact requirements — with Gemini integrated wherever it genuinely helps.",
   },
   {
     icon: Zap,

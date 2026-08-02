@@ -350,4 +350,28 @@ dedicated pass, as noted earlier in this log).
   crash. **You'll need to run `schema.sql` in your Supabase project and do
   the final live connectivity test yourself.**
 
+**Swapped Claude for Google Gemini — genuinely free, no card required**
+- Researched current free AI API options rather than guessing. Anthropic's
+  API has no free tier at all (confirmed current pricing: no free tier for
+  direct API access, payment required from the first request). Google
+  Gemini's free tier (Gemini 2.5 Flash, via Google AI Studio) needs no
+  credit card and comfortably covers demo-scale traffic — and since the app
+  already uses a Google Cloud project for OAuth, it's the same ecosystem.
+- New `backend/src/lib/gemini.ts` replaces `anthropic.ts` entirely — same
+  system prompts, same exported shape, but backed by the Gemini SDK.
+  The Automation Audit tool now uses Gemini's native JSON response mode
+  instead of manually stripping markdown fences from a text reply.
+- Updated every route (`ai.ts`, `audit.ts`) and removed the unused
+  `@anthropic-ai/sdk` dependency entirely.
+- Swept the whole app for "Claude"/"Anthropic" copy that would now be
+  inaccurate — Terms, Privacy, trust badges, error messages, and the
+  onboarding tour all correctly say Gemini now.
+- **Same sandbox limitation as Supabase**: this environment can't reach
+  `generativelanguage.googleapis.com` either (confirmed directly). Code
+  compiles clean and the server degrades gracefully (a clear 503) without
+  a real key — the live AI response itself needs testing with a real
+  `GEMINI_API_KEY` outside this sandbox.
+- Env var renamed: `ANTHROPIC_API_KEY` → `GEMINI_API_KEY` (get one free at
+  aistudio.google.com/apikey).
+
 See `PROJECT-PLAN.md` for what's next.

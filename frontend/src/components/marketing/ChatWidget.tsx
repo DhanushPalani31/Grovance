@@ -90,7 +90,7 @@ export default function ChatWidget() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold leading-tight">Grovance Assistant</p>
-                  <p className="text-[10px] text-slate-300">Online now · powered by Claude</p>
+                  <p className="text-[10px] text-slate-300">Online now · powered by Gemini</p>
                 </div>
               </div>
               <button onClick={() => setOpen(false)} aria-label="Close" className="text-white/70 hover:text-white">

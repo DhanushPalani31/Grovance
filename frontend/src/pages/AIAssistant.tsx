@@ -49,7 +49,7 @@ export default function AIAssistant() {
           {
             role: "assistant" as const,
             content:
-              "(Backend/AI not connected yet — once the API server is running with an Anthropic key set, I'll answer live here.)",
+              "(Backend/AI not connected yet — once the API server is running with a Gemini key set, I'll answer live here.)",
           },
         ];
         setLastAssistantIndex(next.length - 1);
@@ -72,7 +72,7 @@ export default function AIAssistant() {
           <h1 className="text-2xl font-bold text-ink">AI Assistant</h1>
           <p className="text-sm text-slate-500">Trained on this brand's own data.</p>
         </div>
-        <TrustBadge kind="ai" label="Powered by Claude" />
+        <TrustBadge kind="ai" label="Powered by Gemini" />
       </div>
 
       <div className="flex-1 space-y-4 overflow-y-auto rounded-xl border border-slate-200 bg-white p-5 shadow-sm">

@@ -27,7 +27,7 @@ const services = [
     icon: Code2,
     title: "Custom app development",
     description:
-      "We design and build a bespoke application around your exact requirements — web, internal tools, integrations. Claude is brought in for AI-assisted features only where it adds real, measurable value, not as a default.",
+      "We design and build a bespoke application around your exact requirements — web, internal tools, integrations. Gemini is brought in for AI-assisted features only where it adds real, measurable value, not as a default.",
     demoLabel: "Start a custom project →",
     demoLink: "/contact",
   },

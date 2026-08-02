@@ -54,7 +54,7 @@ Your Content solely to provide and improve the Service.`,
   {
     title: "8. Third-Party Services",
     body: `The Service relies on third-party infrastructure and AI providers (including
-Anthropic's Claude API) to operate certain features. Your use of those features is also
+Google's Gemini API) to operate certain features. Your use of those features is also
 subject to the relevant third party's terms, to the extent applicable.`,
   },
   {

@@ -26,7 +26,7 @@ export default function ContentStudio() {
       setResult(res.result);
     } catch {
       setResult(
-        "(Backend/AI not connected yet — once the API server is running with an Anthropic key set, generated copy will appear here.)"
+        "(Backend/AI not connected yet — once the API server is running with a Gemini key set, generated copy will appear here.)"
       );
     } finally {
       setLoading(false);
@@ -40,7 +40,7 @@ export default function ContentStudio() {
           <h1 className="text-2xl font-bold text-ink">Content Studio</h1>
           <p className="text-sm text-slate-500">Marketing copy, generated in seconds.</p>
         </div>
-        <TrustBadge kind="ai" label="Powered by Claude" />
+        <TrustBadge kind="ai" label="Powered by Gemini" />
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">

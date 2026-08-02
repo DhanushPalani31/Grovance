@@ -21,7 +21,7 @@ const steps = [
   {
     icon: Bot,
     title: "Talk to the AI Assistant",
-    body: "It's genuinely powered by Claude — ask it something and see a real response.",
+    body: "It's genuinely powered by Gemini — ask it something and see a real response.",
     link: "/portal/ai-assistant",
     linkLabel: "Try it",
   },
