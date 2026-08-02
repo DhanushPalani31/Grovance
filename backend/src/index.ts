@@ -11,7 +11,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+// In production, set FRONTEND_URL to your deployed frontend's real origin
+// (e.g. https://grovance.vercel.app) to restrict CORS to just that domain.
+// Left permissive by default so local dev keeps working without any setup.
+const allowedOrigin = process.env.FRONTEND_URL;
+app.use(cors(allowedOrigin ? { origin: allowedOrigin } : {}));
 app.use(express.json());
 
 app.use("/api/health", healthRouter);
