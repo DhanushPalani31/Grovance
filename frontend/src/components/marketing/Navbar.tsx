@@ -67,14 +67,6 @@ export default function Navbar() {
               Free Audit
             </Link>
           )}
-          {user && (
-            <Link
-              to="/portal"
-              className="rounded-lg border border-brand/30 px-4 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/5"
-            >
-              My Dashboard
-            </Link>
-          )}
         </div>
       </div>
     </motion.header>
