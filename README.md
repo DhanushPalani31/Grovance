@@ -250,4 +250,20 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
 - The earlier `outreach/` folder (CSV-based cold-email tool) was removed
   entirely in favor of this approach
 
+**Chat widget modernization + clarity pass on confusing wording:**
+- The floating chat widget had never received the animation/polish pass the
+  rest of the app got — no entrance animation, plain avatar, instant reply
+  text. Rebuilt to match: entrance/exit animation, an "online now" status
+  dot, typewriter-style reply reveal, per-message animation
+- Renamed "Go to Portal" / "View Live Demo" to **"See a Working Example"**
+  (visitors) / **"My Dashboard"** (logged-in users) everywhere it appeared
+  (Navbar, Landing hero, Footer) — "Portal" is internal jargon a first-time
+  visitor won't parse
+- Added a hover tooltip on that button explaining exactly what it opens
+  ("a real, working dashboard... not a screenshot"), same pattern as the
+  Audit page's tooltip
+- Automation Center: moved the "this is real, not a mockup" message from a
+  buried footnote to a prominent pulsing banner at the top of the page,
+  so it's the first thing anyone sees before they start clicking around
+
 See `PROJECT-PLAN.md` for what's next.

@@ -73,6 +73,22 @@ export default function AutomationCenter() {
         <TrustBadge kind="automation" label={`${rules.filter((r) => r.enabled).length} active rules`} />
       </div>
 
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6 flex items-center gap-3 rounded-xl border border-success/30 bg-success/5 p-4"
+      >
+        <span className="relative flex h-2.5 w-2.5 shrink-0">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-success" />
+        </span>
+        <p className="text-sm text-slate-700">
+          <strong className="font-semibold text-ink">This is a live control panel, not a mockup.</strong>{" "}
+          Toggling a rule or clicking "Run now" changes real backend data — check the
+          Dashboard's Activity Feed right after and you'll see the same event appear there.
+        </p>
+      </motion.div>
+
       {error && (
         <div className="rounded-xl border border-dashed border-slate-300 p-5 text-sm text-slate-500">
           Backend not reachable — start the API server to load and trigger live rules
@@ -166,11 +182,8 @@ export default function AutomationCenter() {
       </div>
 
       <div className="mt-6 rounded-xl border border-dashed border-slate-300 p-5 text-sm text-slate-500">
-        Hit "Run now" on any rule, then check the Dashboard's Activity Feed — you'll see
-        the exact same event appear there in real time. Toggling or running a rule here
-        calls the real backend; nothing on this page is a local-only mockup. Want a
-        custom automation for your brand's specific workflow? This is exactly the kind
-        of rule Grovance builds around your requirements.
+        Want a custom automation for your brand's specific workflow? This is exactly the
+        kind of rule Grovance builds around your requirements.
       </div>
     </div>
   );

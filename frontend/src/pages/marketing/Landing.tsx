@@ -94,7 +94,7 @@ export default function Landing() {
               to="/portal"
               className="flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-sm font-semibold text-ink transition-transform hover:scale-105"
             >
-              Explore the Live Demo <ArrowRight size={16} />
+              See a Working Example <ArrowRight size={16} />
             </Link>
             <Link
               to="/audit"

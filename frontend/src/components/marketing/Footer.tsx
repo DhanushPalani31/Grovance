@@ -15,7 +15,7 @@ const columns = [
     links: [
       { to: "/services", label: "Services" },
       { to: "/pricing", label: "Pricing" },
-      { to: "/portal", label: "Live Demo" },
+      { to: "/portal", label: "Working Example" },
     ],
   },
   {
