@@ -1,6 +1,8 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
+import PageTitle from "./components/PageTitle";
 import Dashboard from "./pages/Dashboard";
 import AutomationCenter from "./pages/AutomationCenter";
 import AIAssistant from "./pages/AIAssistant";
@@ -23,10 +25,26 @@ import Signup from "./pages/auth/Signup";
 import CommandPalette from "./components/CommandPalette";
 
 export default function App() {
+  const location = useLocation();
+  // Key by top-level segment only — this fades between marketing pages,
+  // auth pages, and entering/leaving the portal, but deliberately does NOT
+  // retrigger when navigating between pages *inside* the portal (which
+  // would otherwise remount Layout/Sidebar on every internal click).
+  const transitionKey = location.pathname.startsWith("/portal") ? "/portal" : location.pathname;
+
   return (
     <>
+      <PageTitle />
       <CommandPalette />
-      <Routes>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={transitionKey}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+        >
+          <Routes location={location}>
       {/* Public marketing site */}
       <Route path="/" element={<Landing />} />
       <Route path="/services" element={<Services />} />
@@ -64,7 +82,9 @@ export default function App() {
 
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
-      </Routes>
+          </Routes>
+        </motion.div>
+      </AnimatePresence>
     </>
   );
 }

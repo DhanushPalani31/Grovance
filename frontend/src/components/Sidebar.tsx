@@ -9,6 +9,8 @@ import {
   Settings as SettingsIcon,
   ArrowLeft,
 } from "lucide-react";
+import { useAuth } from "../lib/AuthContext";
+import Avatar from "./Avatar";
 
 const links = [
   { to: "/portal", label: "Dashboard", icon: LayoutDashboard, end: true },
@@ -20,9 +22,11 @@ const links = [
   { to: "/portal/settings", label: "Settings", icon: SettingsIcon },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+  const { user } = useAuth();
+
   return (
-    <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-slate-200 bg-white">
+    <aside className="flex h-full w-64 shrink-0 flex-col border-r border-slate-200 bg-white">
       <div className="flex items-center gap-2 px-6 py-5">
         <img src="/logo.svg" alt="Grovance" className="h-8 w-auto" />
       </div>
@@ -39,6 +43,7 @@ export default function Sidebar() {
             key={to}
             to={to}
             end={end}
+            onClick={onNavigate}
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                 isActive
@@ -62,6 +67,19 @@ export default function Sidebar() {
           Press <kbd className="rounded bg-white/20 px-1.5 py-0.5 text-[10px]">⌘K</kbd> to jump anywhere
         </p>
       </div>
+      {user && (
+        <Link
+          to="/portal/settings"
+          onClick={onNavigate}
+          className="flex items-center gap-2.5 border-t border-slate-100 px-4 py-3 hover:bg-slate-50"
+        >
+          <Avatar name={user.name} size={32} />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-ink">{user.name}</p>
+            <p className="truncate text-xs text-slate-400">{user.email}</p>
+          </div>
+        </Link>
+      )}
     </aside>
   );
 }

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../lib/AuthContext";
 import TrustBadge from "../components/TrustBadge";
+import Avatar from "../components/Avatar";
 
 export default function Settings() {
   const { user, logout } = useAuth();
@@ -24,7 +25,10 @@ export default function Settings() {
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 font-semibold text-ink">Profile</h2>
+        <div className="mb-4 flex items-center gap-3">
+          {user && <Avatar name={user.name} size={44} />}
+          <h2 className="font-semibold text-ink">Profile</h2>
+        </div>
         <div className="space-y-3 text-sm">
           <div className="flex justify-between border-b border-slate-100 pb-3">
             <span className="text-slate-500">Name</span>

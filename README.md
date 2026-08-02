@@ -292,4 +292,37 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
 - Verified: full tsc + build pass, live smoke test confirms every route
   still returns 200 after the removals and changes
 
+**Full component audit — international-standard polish pass:**
+- Did a systematic audit of every component before changing anything, rather
+  than guessing what "Google/Zoho-level" means. Found two genuine functional
+  bugs and three real polish gaps:
+- **Critical bug fixed**: the marketing Navbar's nav links were simply
+  `hidden` below the `md` breakpoint with no replacement — mobile visitors
+  had no way to reach About/Services/Pricing/Careers/Contact at all. Added
+  a real animated hamburger menu with a slide-down panel.
+- **Critical bug fixed**: the portal's Sidebar had the identical bug
+  (`hidden md:flex`, no mobile alternative) — the entire client portal was
+  unusable on a phone. Added a proper slide-in mobile drawer with backdrop,
+  matching the pattern used for the marketing nav.
+- **User avatar added** (initials-in-a-circle, color derived from name) —
+  a staple of every professional dashboard (Zoho, Google Workspace, etc.)
+  that was completely missing. Now shown in the Sidebar's account footer
+  and at the top of the Settings page.
+- **Per-page browser tab titles** — every route previously showed the same
+  static title; each page now sets its own via a small centralized
+  `PageTitle` component (no per-page edits needed).
+- **Smart route-transition fade** — pages now fade between each other on
+  navigation, deliberately scoped so that navigating *within* the portal
+  (Dashboard → Automation Center, etc.) does NOT retrigger the transition
+  and remount the Sidebar — only top-level page changes (marketing ↔ auth
+  ↔ portal) animate.
+- Verified: full tsc + build pass, live smoke test with both servers
+  running confirms every route (including `/login`, `/signup`) still
+  returns 200 and the backend health check responds correctly.
+
+**Deliberately deferred, flagged rather than silently skipped:** a full
+empty-state redesign for lists that are genuinely empty (low priority since
+the demo data means this rarely triggers), and dark mode (still its own
+dedicated pass, as noted earlier in this log).
+
 See `PROJECT-PLAN.md` for what's next.
