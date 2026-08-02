@@ -62,14 +62,22 @@ export default function Navbar() {
         </nav>
         <div className="flex items-center gap-3">
           {!user && (
-            <Link to="/login" className="hidden text-sm font-medium text-slate-600 hover:text-brand sm:block">
-              Log in
-            </Link>
+            <div className="hidden items-center gap-3 md:flex">
+              <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-brand">
+                Log in
+              </Link>
+              <Link
+                to="/signup"
+                className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Sign up
+              </Link>
+            </div>
           )}
           {!onAuditPage && (
             <Link
               to="/audit"
-              className="hidden rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md sm:block"
+              className="hidden rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md md:block"
             >
               Free Audit
             </Link>
@@ -109,9 +117,14 @@ export default function Navbar() {
                 </NavLink>
               ))}
               {!user && (
-                <Link to="/login" className="border-b border-slate-100 py-3 text-sm font-medium text-slate-600">
-                  Log in
-                </Link>
+                <>
+                  <Link to="/login" className="border-b border-slate-100 py-3 text-sm font-medium text-slate-600">
+                    Log in
+                  </Link>
+                  <Link to="/signup" className="border-b border-slate-100 py-3 text-sm font-medium text-slate-600">
+                    Sign up
+                  </Link>
+                </>
               )}
               {!onAuditPage && (
                 <Link
