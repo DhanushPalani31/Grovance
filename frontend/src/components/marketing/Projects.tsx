@@ -5,9 +5,9 @@ export default function Projects() {
   return (
     <section className="border-t border-slate-200 bg-slate-50 py-16">
       <div className="mx-auto max-w-3xl px-6 text-center">
-        <h2 className="text-2xl font-bold text-ink">Projects completed</h2>
+        <h2 className="text-2xl font-bold text-ink">Our Work</h2>
         <p className="mt-2 text-sm text-slate-500">
-          One delivered so far — the first of what we're building toward.
+          A completed client project, with more currently underway.
         </p>
 
         <motion.a
@@ -37,7 +37,7 @@ export default function Projects() {
           </div>
           <p className="mt-3 text-sm font-medium text-brand">nayabuilders.com</p>
           <p className="mt-2 text-xs text-slate-400">
-            Delivered as a freelance project.
+            Delivered directly for the client.
           </p>
         </motion.a>
       </div>

@@ -194,8 +194,8 @@ export default function Services() {
 
       <section className="border-t border-slate-200 bg-slate-50 py-16">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <h2 className="text-2xl font-bold text-ink">Projects completed</h2>
-          <p className="mt-2 text-sm text-slate-500">One delivered so far — more in progress.</p>
+          <h2 className="text-2xl font-bold text-ink">Our Work</h2>
+          <p className="mt-2 text-sm text-slate-500">A completed client project, with more currently underway.</p>
           <motion.a
             href="https://www.nayabuilders.com"
             target="_blank"
@@ -216,7 +216,7 @@ export default function Services() {
               <ExternalLink size={18} className="shrink-0 text-slate-400" />
             </div>
             <p className="mt-3 text-sm font-medium text-brand">nayabuilders.com</p>
-            <p className="mt-2 text-xs text-slate-400">Delivered as a freelance project.</p>
+            <p className="mt-2 text-xs text-slate-400">Delivered directly for the client.</p>
           </motion.a>
         </div>
       </section>

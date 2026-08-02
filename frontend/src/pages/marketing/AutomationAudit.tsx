@@ -138,7 +138,7 @@ export default function AutomationAudit() {
 
               <div className="mb-4">
                 <label className="mb-2 block text-sm font-medium text-slate-700">
-                  Or just tell us which of these are true (select any)
+                  Or select any that apply
                 </label>
                 <div className="space-y-2">
                   {setupOptions.map((option) => (
