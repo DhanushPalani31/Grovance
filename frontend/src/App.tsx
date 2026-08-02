@@ -13,6 +13,7 @@ import Landing from "./pages/marketing/Landing";
 import Services from "./pages/marketing/Services";
 import Pricing from "./pages/marketing/Pricing";
 import Contact from "./pages/marketing/Contact";
+import AutomationAudit from "./pages/marketing/AutomationAudit";
 import About from "./pages/marketing/About";
 import Careers from "./pages/marketing/Careers";
 import Terms from "./pages/marketing/Terms";
@@ -31,6 +32,7 @@ export default function App() {
       <Route path="/services" element={<Services />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/audit" element={<AutomationAudit />} />
       <Route path="/about" element={<About />} />
       <Route path="/careers" element={<Careers />} />
       <Route path="/terms" element={<Terms />} />

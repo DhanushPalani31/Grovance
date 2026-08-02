@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Zap, Bot, ShieldCheck, Code2, ArrowRight } from "lucide-react";
+import { Zap, Bot, ShieldCheck, Code2, ArrowRight, Sparkles } from "lucide-react";
 import Navbar from "../../components/marketing/Navbar";
 import Footer from "../../components/marketing/Footer";
 import ChatWidget from "../../components/marketing/ChatWidget";
@@ -95,6 +95,12 @@ export default function Landing() {
               className="flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-sm font-semibold text-ink transition-transform hover:scale-105"
             >
               Explore the Live Demo <ArrowRight size={16} />
+            </Link>
+            <Link
+              to="/audit"
+              className="flex items-center gap-2 rounded-lg border border-accent/40 bg-accent/10 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent/20"
+            >
+              <Sparkles size={16} /> Get a Free Audit
             </Link>
             <Link
               to="/contact"

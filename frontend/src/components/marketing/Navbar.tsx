@@ -58,6 +58,12 @@ export default function Navbar() {
             </Link>
           )}
           <Link
+            to="/audit"
+            className="hidden rounded-lg border border-brand/30 bg-brand/5 px-4 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/10 sm:block"
+          >
+            Free Audit
+          </Link>
+          <Link
             to="/portal"
             className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-dark hover:shadow-md"
           >

@@ -230,4 +230,24 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
   two APIs the new hero depends on (`/api/health`, `/api/automation/stats`)
   both respond correctly
 
+**Automation Audit tool (replaces the earlier outreach-tool experiment):**
+- After working through a cold-outreach tool concept, we replaced it entirely
+  with something better-aligned to Grovance's actual strengths: a free,
+  instant, public **Automation Audit** at `/audit`. A visitor describes their
+  business (name, category, what they currently have/lack) and gets a
+  personalized breakdown — honest pain points, 3 matched Grovance automation
+  tools with a concrete "When X → Then Y" workflow for each, generated live
+  by Claude
+- Zero legal/compliance risk (unlike cold outreach) since visitors opt in by
+  showing up and asking; the tool is demoable live in front of a prospect,
+  and every submission with an email becomes a real lead in the existing
+  Contact/leads pipeline
+- New `POST /api/audit` endpoint, grounded to only recommend tools that
+  actually exist on the Services page (no invented tool names)
+- Verified live: confirmed graceful 503 without an API key, 400 on missing
+  required fields, and the `/audit` route serving correctly alongside the
+  rest of the site
+- The earlier `outreach/` folder (CSV-based cold-email tool) was removed
+  entirely in favor of this approach
+
 See `PROJECT-PLAN.md` for what's next.

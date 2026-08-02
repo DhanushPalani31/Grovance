@@ -91,6 +91,19 @@ export interface DashboardStats {
   automationEventsToday: number;
 }
 
+export interface AuditTool {
+  name: string;
+  when: string;
+  then: string;
+  why: string;
+}
+
+export interface AuditResult {
+  tagline: string;
+  painPoints: string[];
+  tools: AuditTool[];
+}
+
 export const api = {
   getHealth: () => request<HealthStatus>("/api/health"),
   getActivity: () => request<ActivityItem[]>("/api/automation/activity"),
@@ -143,5 +156,10 @@ export const api = {
     request<{ received: boolean; id: string }>("/api/leads", {
       method: "POST",
       body: JSON.stringify({ name, email, message }),
+    }),
+  runAudit: (businessName: string, category: string, currentSetup: string[], email?: string) =>
+    request<AuditResult>("/api/audit", {
+      method: "POST",
+      body: JSON.stringify({ businessName, category, currentSetup, email }),
     }),
 };
