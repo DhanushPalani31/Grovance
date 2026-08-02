@@ -266,4 +266,30 @@ GitHub's public rate limit (60 req/hour) without a `GITHUB_TOKEN` — see
   buried footnote to a prominent pulsing banner at the top of the page,
   so it's the first thing anyone sees before they start clicking around
 
+**Removed the "Portal" CTA + applied current UI/UX research broadly:**
+- Removed the "See a Working Example"/"My Dashboard" portal CTA entirely
+  from the Navbar, Landing hero, and Footer (was still causing confusion
+  even after the earlier tooltip fix). The `/portal` route, login/signup,
+  and the actual dashboard are untouched and fully functional — just no
+  longer pushed as a generic marketing CTA. The **Free Audit** tool is now
+  the primary CTA everywhere, since it's the one thing that's both
+  self-explanatory and immediately demoable
+- Researched current (2026) UI/UX guidance before making broader changes.
+  The consistent signal across sources: motion should be purposeful (signal
+  what happened, not decorate), accessibility is now treated as
+  non-negotiable rather than optional, and modular "bento grid" layouts are
+  replacing uniform grids
+- **Accessibility, applied app-wide via one CSS change**: visible focus
+  rings for keyboard navigation (`:focus-visible`) on every interactive
+  element, and full `prefers-reduced-motion` support — every animation
+  respects it automatically now
+- **Bento-style grid** applied to the Services page's automation-tools
+  section — the lead tool (Auto-Reply) now gets a wider, larger featured
+  card instead of a uniform 6-up grid. (Deliberately did *not* force this
+  same pattern onto the Landing page's 4-item pillar grid — the math
+  doesn't tile cleanly there without leaving an awkward gap, so it stays a
+  clean uniform grid rather than a forced, slightly-broken-looking bento)
+- Verified: full tsc + build pass, live smoke test confirms every route
+  still returns 200 after the removals and changes
+
 See `PROJECT-PLAN.md` for what's next.

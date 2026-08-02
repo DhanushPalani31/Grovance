@@ -146,6 +146,7 @@ export default function Services() {
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {automationTools.map(({ icon: Icon, name, copy, example }, i) => {
               const isActive = activeTool === name;
+              const featured = i === 0; // bento-style: lead tool gets a wider card
               return (
                 <motion.button
                   key={name}
@@ -156,13 +157,17 @@ export default function Services() {
                   transition={{ duration: 0.3, delay: i * 0.05 }}
                   whileHover={{ y: -2 }}
                   className={`rounded-xl border p-5 text-left transition-colors ${
-                    isActive ? "border-brand/40 bg-brand/5" : "border-slate-200 hover:border-brand/20"
-                  }`}
+                    featured ? "sm:col-span-2 lg:col-span-2" : ""
+                  } ${isActive ? "border-brand/40 bg-brand/5" : "border-slate-200 hover:border-brand/20"}`}
                 >
-                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-info/10 text-info">
-                    <Icon size={16} />
+                  <div
+                    className={`mb-3 flex items-center justify-center rounded-lg bg-info/10 text-info ${
+                      featured ? "h-11 w-11" : "h-9 w-9"
+                    }`}
+                  >
+                    <Icon size={featured ? 20 : 16} />
                   </div>
-                  <h3 className="text-sm font-semibold text-ink">{name}</h3>
+                  <h3 className={`font-semibold text-ink ${featured ? "text-base" : "text-sm"}`}>{name}</h3>
                   <p className="mt-1 text-xs text-slate-500">{copy}</p>
 
                   <AnimatePresence>

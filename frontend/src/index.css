@@ -52,3 +52,29 @@ body {
   background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
   background-size: 22px 22px;
 }
+
+/* Accessibility: visible focus rings for keyboard navigation, without adding
+   a ring on mouse click (focus-visible handles that distinction natively) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Accessibility: respect prefers-reduced-motion — every 2026 UX guideline
+   treats this as required, not optional */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
