@@ -534,3 +534,35 @@ without domain verification):
   attempted hit this sandbox's standing network block on `api.resend.com`
   before ever reaching the notification step, so the actual email send
   itself is unverified from here and needs a real test on your machine.
+
+---
+
+## Full 3-step flow: store → notify owner → contextual reply to visitor
+
+Extended the lead-capture flow so every Contact form or Audit tool
+submission with an email now does all three steps:
+
+1. **Store** in Supabase (`leads` table) — unchanged
+2. **Notify the owner** (`grovanceco@gmail.com` via `notifyNewLead`) — from
+   the previous pass
+3. **Reply to the visitor with something actually contextual** (new):
+   - **Contact form**: a short Gemini-generated auto-reply that references
+     what they specifically wrote — not a generic "thanks for reaching out"
+   - **Automation Audit**: an email containing their own already-generated
+     result (tagline, pain points, competitive insight, recommended tools)
+     — no extra AI call needed here, since the on-screen result is already
+     personalized; just reformatted as an email
+
+**Important limitation, surfaced clearly rather than silently attempted**:
+replying *to visitors* (not just to your own account email) requires a
+domain verified with Resend — free plan without domain verification only
+allows sending to your own account email. Gated behind a new
+`canReplyToVisitors()` check (`FROM_EMAIL` env var) — if not configured,
+steps 1 and 2 still work exactly as before, step 3 is skipped silently
+with a logged warning rather than breaking anything.
+
+Verified: tsc + build pass. Live-tested validation (400 on missing
+fields) and confirmed the failure on a full submission is the same
+pre-existing Supabase network block from this sandbox, not a new issue —
+the actual visitor-reply send itself needs testing on your machine once
+`FROM_EMAIL` is set up with a verified domain.

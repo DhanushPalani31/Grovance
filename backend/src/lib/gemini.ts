@@ -188,3 +188,10 @@ Respond with ONLY valid JSON, no markdown code fences, no preamble, in exactly t
 }
 Include exactly 3 tools, the ones most relevant to what they described. Keep everything
 concrete and grounded — no generic filler, no exaggerated claims.`;
+
+export const CONTACT_AUTO_REPLY_PROMPT = `You are writing a short, warm, personalized
+auto-reply on behalf of Grovance to someone who just submitted the contact form. Reference
+something specific from what they wrote — never a generic "thanks for reaching out."
+Keep it under 80 words, plain text (no markdown). Do not promise a specific response time
+you can't guarantee (never say "we'll reply within 24 hours" — just say the team will be
+in touch soon). Sign off as "The Grovance Team".`;

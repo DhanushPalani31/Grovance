@@ -13,6 +13,16 @@ export function isEmailConfigured(): boolean {
   return Boolean(process.env.RESEND_API_KEY && process.env.NOTIFY_EMAIL);
 }
 
+/**
+ * Whether sending TO visitors (not just to your own account email) is
+ * possible — requires FROM_EMAIL set to an address on a domain you've
+ * verified with Resend. Without this, Resend will reject sends to anyone
+ * other than your own account email.
+ */
+export function canReplyToVisitors(): boolean {
+  return Boolean(process.env.RESEND_API_KEY && process.env.FROM_EMAIL);
+}
+
 interface LeadNotification {
   source: "Contact form" | "Automation Audit";
   name: string;
@@ -59,4 +69,35 @@ export async function notifyNewLead(lead: LeadNotification): Promise<void> {
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/**
+ * Send a reply TO the visitor (not to you). Requires FROM_EMAIL to be set
+ * to an address on a domain verified with Resend — Resend rejects sends to
+ * third parties from the shared onboarding@resend.dev sender. If not
+ * configured, this is skipped silently (logged, not thrown) so the rest of
+ * the submission flow (DB save, owner notification) still succeeds.
+ */
+export async function sendReplyToVisitor(to: string, subject: string, bodyText: string): Promise<void> {
+  const resend = getClient();
+  const fromEmail = process.env.FROM_EMAIL;
+  if (!resend || !fromEmail) {
+    console.warn("Visitor auto-reply skipped — FROM_EMAIL not set (needs a Resend-verified domain)");
+    return;
+  }
+
+  try {
+    await resend.emails.send({
+      from: `Grovance <${fromEmail}>`,
+      to,
+      subject,
+      html: `
+        <div style="font-family: Helvetica, Arial, sans-serif; max-width: 480px; white-space: pre-wrap; color:#0F172A;">
+          ${escapeHtml(bodyText)}
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("Failed to send visitor auto-reply:", err);
+  }
 }

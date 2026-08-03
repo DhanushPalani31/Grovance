@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { generateGroundedText, generateText, isConfigured, AUDIT_SYSTEM_PROMPT, AUDIT_SYSTEM_PROMPT_FALLBACK } from "../lib/gemini";
 import { store } from "../lib/store";
-import { notifyNewLead } from "../lib/email";
+import { notifyNewLead, sendReplyToVisitor, canReplyToVisitors } from "../lib/email";
 
 export const auditRouter = Router();
 
@@ -118,8 +118,37 @@ What they currently have/lack (selected from a checklist): ${
       const message = `Automation Audit requested (${category}${location ? `, ${location}` : ""})${
         customNeeds ? ` — "${customNeeds}"` : ""
       }`;
+      // Step 1: store
       await store.addLead({ name: businessName, email, message });
+      // Step 2: notify the owner
       notifyNewLead({ source: "Automation Audit", name: businessName, email, message });
+      // Step 3: email the visitor their own result — already contextual (it's
+      // literally their personalized audit), so no extra AI call needed, just
+      // reformat it as an email. Only sends if a verified domain is configured.
+      if (canReplyToVisitors()) {
+        const toolLines = result.tools
+          .map((t) => `• ${t.name} — when ${t.when}, we'd automatically ${t.then}`)
+          .join("\n");
+        const emailBody = `Hi, here's the automation audit you just ran for ${businessName}:
+
+${result.tagline}
+
+What we noticed:
+${result.painPoints.map((p) => `• ${p}`).join("\n")}
+
+Where you could get ahead:
+${result.competitiveInsight}
+
+Recommended for you:
+${toolLines}
+
+Want to talk through any of this? Just reply to this email.
+
+— The Grovance Team`;
+        sendReplyToVisitor(email, `Your Automation Audit for ${businessName}`, emailBody).catch((err) =>
+          console.error("Audit visitor email failed:", err)
+        );
+      }
     }
     await store.logActivity({
       label: `Automation Audit generated for "${businessName}" (${category})${grounded ? "" : " [ungrounded fallback]"}`,
