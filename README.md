@@ -566,3 +566,34 @@ fields) and confirmed the failure on a full submission is the same
 pre-existing Supabase network block from this sandbox, not a new issue —
 the actual visitor-reply send itself needs testing on your machine once
 `FROM_EMAIL` is set up with a verified domain.
+
+---
+
+## Migrated from Resend to Gmail SMTP (Nodemailer) — solves the domain problem entirely
+
+Good catch: Resend's free tier requiring a verified domain to reply to
+visitors was the real blocker for Step 3 given the zero-budget constraint.
+Gmail's own SMTP solves this completely — it lets you send from your own
+Gmail address to ANY recipient, no domain verification needed at all,
+unlike Resend's free tier.
+
+- Removed `resend` dependency entirely, added `nodemailer`
+- Rewrote `email.ts` using Gmail SMTP (`nodemailer.createTransport({ service:
+  "gmail", ... })`) — kept the exact same function signatures
+  (`notifyNewLead`, `sendReplyToVisitor`, `canReplyToVisitors`,
+  `isEmailConfigured`), so `leads.ts` and `audit.ts` needed **zero changes**
+- `canReplyToVisitors()` is now just an alias for `isEmailConfigured()` —
+  with Gmail SMTP there's no separate domain-verification gate, so all 3
+  steps (store, notify owner, reply to visitor) work off the same two
+  credentials
+- New env vars: `GMAIL_USER`, `GMAIL_APP_PASSWORD` (replacing
+  `RESEND_API_KEY`/`FROM_EMAIL`) — requires 2-Step Verification enabled on
+  the Gmail account and an App Password generated at
+  myaccount.google.com/apppasswords (not the regular Gmail password, Google
+  blocks that for security)
+
+Verified: tsc + build pass, zero changes needed to any calling code
+(confirms the interface-compatible rewrite worked). Confirmed Gmail's SMTP
+endpoint hits the same sandbox network block as every other external
+service tested in this project — the actual send needs testing on your
+machine once `GMAIL_APP_PASSWORD` is set up.

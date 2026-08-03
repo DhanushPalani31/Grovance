@@ -1,26 +1,36 @@
-import { Resend } from "resend";
+import nodemailer, { type Transporter } from "nodemailer";
 
-let client: Resend | null = null;
+let transporter: Transporter | null = null;
 
-function getClient(): Resend | null {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return null;
-  if (!client) client = new Resend(apiKey);
-  return client;
-}
+function getTransporter(): Transporter | null {
+  const user = process.env.GMAIL_USER;
+  const pass = process.env.GMAIL_APP_PASSWORD;
+  if (!user || !pass) return null;
 
-export function isEmailConfigured(): boolean {
-  return Boolean(process.env.RESEND_API_KEY && process.env.NOTIFY_EMAIL);
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user, pass },
+    });
+  }
+  return transporter;
 }
 
 /**
- * Whether sending TO visitors (not just to your own account email) is
- * possible — requires FROM_EMAIL set to an address on a domain you've
- * verified with Resend. Without this, Resend will reject sends to anyone
- * other than your own account email.
+ * Gmail SMTP can send to ANY recipient from your own Gmail address — unlike
+ * Resend's free tier, no domain verification is needed at all. This makes
+ * every step (owner notification AND replying to visitors) free with zero
+ * domain cost, as long as a Gmail account + App Password is configured.
  */
+export function isEmailConfigured(): boolean {
+  return Boolean(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD);
+}
+
+// Kept for compatibility with existing call sites — with Gmail SMTP there's
+// no separate domain-verification requirement, so this is just an alias for
+// isEmailConfigured().
 export function canReplyToVisitors(): boolean {
-  return Boolean(process.env.RESEND_API_KEY && process.env.FROM_EMAIL);
+  return isEmailConfigured();
 }
 
 interface LeadNotification {
@@ -31,25 +41,21 @@ interface LeadNotification {
 }
 
 /**
- * Notify the site owner (NOTIFY_EMAIL) that a new lead came in. Uses Resend's
- * default onboarding@resend.dev sender, which works without owning a custom
- * domain as long as you're only sending to your own verified account email —
- * exactly this use case (notifying yourself), not cold outreach to strangers.
- *
+ * Notify the site owner (NOTIFY_EMAIL) that a new lead came in.
  * Never throws — a notification failure should never break the actual lead
  * submission for the visitor. Errors are logged and swallowed.
  */
 export async function notifyNewLead(lead: LeadNotification): Promise<void> {
-  const resend = getClient();
+  const transport = getTransporter();
   const notifyEmail = process.env.NOTIFY_EMAIL;
-  if (!resend || !notifyEmail) {
-    console.warn("Email notifications not configured (RESEND_API_KEY / NOTIFY_EMAIL missing) — skipping");
+  if (!transport || !notifyEmail) {
+    console.warn("Email notifications not configured (GMAIL_USER / GMAIL_APP_PASSWORD / NOTIFY_EMAIL missing) — skipping");
     return;
   }
 
   try {
-    await resend.emails.send({
-      from: "Grovance <onboarding@resend.dev>",
+    await transport.sendMail({
+      from: `Grovance <${process.env.GMAIL_USER}>`,
       to: notifyEmail,
       subject: `New lead: ${lead.name} (${lead.source})`,
       html: `
@@ -67,28 +73,21 @@ export async function notifyNewLead(lead: LeadNotification): Promise<void> {
   }
 }
 
-function escapeHtml(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
 /**
- * Send a reply TO the visitor (not to you). Requires FROM_EMAIL to be set
- * to an address on a domain verified with Resend — Resend rejects sends to
- * third parties from the shared onboarding@resend.dev sender. If not
- * configured, this is skipped silently (logged, not thrown) so the rest of
- * the submission flow (DB save, owner notification) still succeeds.
+ * Send a reply TO the visitor. With Gmail SMTP this works for any recipient,
+ * no domain needed. Never throws — logged and swallowed so a failure here
+ * never breaks the rest of the submission flow (DB save, owner notification).
  */
 export async function sendReplyToVisitor(to: string, subject: string, bodyText: string): Promise<void> {
-  const resend = getClient();
-  const fromEmail = process.env.FROM_EMAIL;
-  if (!resend || !fromEmail) {
-    console.warn("Visitor auto-reply skipped — FROM_EMAIL not set (needs a Resend-verified domain)");
+  const transport = getTransporter();
+  if (!transport) {
+    console.warn("Visitor auto-reply skipped — GMAIL_USER / GMAIL_APP_PASSWORD not configured");
     return;
   }
 
   try {
-    await resend.emails.send({
-      from: `Grovance <${fromEmail}>`,
+    await transport.sendMail({
+      from: `Grovance <${process.env.GMAIL_USER}>`,
       to,
       subject,
       html: `
@@ -100,4 +99,8 @@ export async function sendReplyToVisitor(to: string, subject: string, bodyText: 
   } catch (err) {
     console.error("Failed to send visitor auto-reply:", err);
   }
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
