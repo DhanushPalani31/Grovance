@@ -506,3 +506,31 @@ quota-triggered fallback path itself from this sandbox (its own calls
 fail on the network block before ever reaching Google's quota check), but
 the fallback's error-matching logic directly targets the exact error
 format reported.
+
+---
+
+## Lead notifications — you actually get alerted now
+
+Found a real gap while checking the Contact form's behavior: submissions
+were only ever saved silently to Supabase's `leads` table — no email, no
+notification of any kind. A real inquiry could sit there unnoticed
+indefinitely unless someone manually checked the database.
+
+Fixed with Resend (free, no domain needed — since this only sends to your
+own account email, not to strangers, it works within Resend's sandbox mode
+without domain verification):
+
+- New `backend/src/lib/email.ts`: `notifyNewLead()`, lazy-initialized like
+  every other API client in this app. Internally wrapped in try/catch so a
+  notification failure can never break the visitor's actual submission —
+  by construction, not just by convention.
+- Wired into both `leads.ts` (Contact form) and `audit.ts` (Automation
+  Audit, when an email is left) — every real lead now triggers an email to
+  `NOTIFY_EMAIL`.
+- New env vars: `RESEND_API_KEY`, `NOTIFY_EMAIL` (defaults to
+  `grovanceco@gmail.com` in the example file).
+- Verified: tsc + build pass. Confirmed the graceful-degradation path
+  (lead still saves even without Resend configured) — the one live test
+  attempted hit this sandbox's standing network block on `api.resend.com`
+  before ever reaching the notification step, so the actual email send
+  itself is unverified from here and needs a real test on your machine.

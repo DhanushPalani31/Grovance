@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { store } from "../lib/store";
+import { notifyNewLead } from "../lib/email";
 
 export const leadsRouter = Router();
 
@@ -19,6 +20,10 @@ leadsRouter.post("/", async (req, res) => {
       label: `New lead captured from contact form: ${name}`,
       source: "automation",
     });
+
+    // Fire-and-forget: don't let a notification failure block the visitor's
+    // submission from succeeding.
+    notifyNewLead({ source: "Contact form", name, email, message });
 
     res.status(201).json({ received: true, id: lead.id });
   } catch (err) {

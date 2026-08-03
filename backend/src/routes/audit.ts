@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { generateGroundedText, generateText, isConfigured, AUDIT_SYSTEM_PROMPT, AUDIT_SYSTEM_PROMPT_FALLBACK } from "../lib/gemini";
 import { store } from "../lib/store";
+import { notifyNewLead } from "../lib/email";
 
 export const auditRouter = Router();
 
@@ -114,11 +115,11 @@ What they currently have/lack (selected from a checklist): ${
 
     // Log as a real lead if they left an email — same pipeline as the Contact form
     if (email) {
-      await store.addLead({
-        name: businessName,
-        email,
-        message: `Automation Audit requested (${category}${location ? `, ${location}` : ""})`,
-      });
+      const message = `Automation Audit requested (${category}${location ? `, ${location}` : ""})${
+        customNeeds ? ` — "${customNeeds}"` : ""
+      }`;
+      await store.addLead({ name: businessName, email, message });
+      notifyNewLead({ source: "Automation Audit", name: businessName, email, message });
     }
     await store.logActivity({
       label: `Automation Audit generated for "${businessName}" (${category})${grounded ? "" : " [ungrounded fallback]"}`,
